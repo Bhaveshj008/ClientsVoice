@@ -21,6 +21,8 @@
 
 ## 🛠️ Tech Stack
 
+![ClientsVoice Overview](TechStack/image.png) 
+
 - **Frontend**: 
   - **React**: For building user interfaces with a component-based architecture.
   - **Next.js**: For server-side rendering and static site generation, improving SEO and performance.
