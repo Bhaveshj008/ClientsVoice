@@ -5,7 +5,7 @@
 ---
 
 ## 🚀 Project Overview
-![ClientsVoice Overview](images/overview.png) 
+![ClientsVoice Overview](Logo/ClientsVoice.png) 
 
 - **Purpose**: 
   ClientsVoice allows businesses to collect both feedback (for internal improvement) and testimonials (for public display). This project aims to build credibility and enhance customer trust through authentic testimonials.
@@ -43,19 +43,31 @@
 
 ---
 
+
 ## 📋 Project Flow
 
+![Data Flow Diagram](Diagrams/ClientsVoiceDdetailedFlowDig.png)
+
 1. **Form Creation**: 
-   - Businesses specify their needs through an intuitive UI. The backend uses the OpenAI API to generate a custom feedback form dynamically based on user-defined parameters (e.g., industry, type of feedback).
+   - Businesses specify their needs through an intuitive UI. The backend generates a custom feedback form dynamically.
 
 2. **Feedback Collection**: 
-   - Customers access the generated form via a link. The form submission triggers GraphQL mutations to send data to the backend, which stores it in the MongoDB database.
+   - Customers access the generated form via a link. The form submission triggers GraphQL mutations.
 
 3. **Testimonial Display**: 
-   - Businesses can easily embed testimonials on their website through an iframe. The iframe can be styled using CSS to match the business's branding.
+   - Businesses can embed testimonials on their website through an iframe.
 
 4. **Analytics and Insights**: 
-   - The collected data is processed to generate visual reports and trends, helping businesses identify areas for improvement. This is achieved through data aggregation queries to MongoDB.
+   - The collected data is processed to generate visual reports.
+
+---
+
+## 📊 Data Flow Diagram
+
+ ![Project Flow Diagram](Diagrams/ClientsVoiceDataFlowDig.png)<!-- Local image for DFD -->
+
+**Description**:  
+The Data Flow Diagram illustrates how data moves through the ClientsVoice system. It shows the relationships between different entities (like users, the AI model, and the database) and how they interact with one another during the process of feedback collection and testimonial display.
 
 ---
 
