@@ -16,6 +16,7 @@
   - **💬 Testimonial Display**: Easily embed testimonials on websites using an iframe. Users can customize the styling to match their brand identity.
   - **🔒 Secure Data Storage**: Feedback and testimonials are securely stored in a MongoDB database with encryption for data privacy.
   - **📈 Analytics and Insights**: Provides actionable insights through data visualization tools, allowing businesses to track trends and improve customer satisfaction.
+  - **💻 Easy Integration**: Reduce coding efforts by simply embedding our widget code. Once embedded, your testimonials will appear wherever you want on your website with minimal setup.
 
 ---
 
@@ -45,7 +46,6 @@
 
 ---
 
-
 ## 📋 Project Flow
 
 ![Data Flow Diagram](Diagrams/ClientsVoiceDdetailedFlowDig.png)
@@ -66,7 +66,7 @@
 
 ## 📊 Data Flow Diagram
 
- ![Project Flow Diagram](Diagrams/ClientsVoiceDataFlowDig.png)<!-- Local image for DFD -->
+![Project Flow Diagram](Diagrams/ClientsVoiceDataFlowDig.png)
 
 **Description**:  
 The Data Flow Diagram illustrates how data moves through the ClientsVoice system. It shows the relationships between different entities (like users, the AI model, and the database) and how they interact with one another during the process of feedback collection and testimonial display.
@@ -80,6 +80,7 @@ The Data Flow Diagram illustrates how data moves through the ClientsVoice system
 - **🌟 Builds Credibility**: Displaying authentic testimonials enhances trust with potential customers.
 - **📊 Actionable Insights**: Feedback is transformed into visual insights, allowing for informed business decisions.
 - **🔒 Data Security**: User data is encrypted and securely stored, ensuring compliance with data protection regulations.
+- **💻 Write Less Code**: Integrate seamlessly by embedding our widget code, allowing you to display testimonials anywhere on your website with minimal coding effort.
 
 ---
 
@@ -106,4 +107,3 @@ The Data Flow Diagram illustrates how data moves through the ClientsVoice system
 ClientsVoice simplifies the process of collecting and utilizing customer feedback. By automating form generation and making it easy to display testimonials, businesses can improve their operations and attract more customers. This project aims to enhance user experience while providing valuable insights through advanced technology.
 
 ---
-
