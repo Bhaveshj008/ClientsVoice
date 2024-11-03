@@ -1,21 +1,22 @@
 const Space = require('../models/spaceModel');
 const Client = require('../models/ClientModel');
-const mongoose = require('mongoose');
+const FeedbackForm = require('../models/FeedbackForm');
+const TestimonialForm = require('../models/TestimonialForm');
+const { generateFormConfiguration } = require('../services/openAiService');
 
 
 // Create a new space
 const createSpace = async (req, res) => {
     try {
-        const { spaceName, logo, organizationName, businessCategory, feedbackCollection, testimonialCollection } = req.body;
+         const { spaceName, logo, organizationName, businessCategory, feedbackFormConfig, testimonialFormConfig } = req.body;
+   
 
         const newSpace = new Space({
             clientId: req.client.clientId, // Ensure this is set correctly
             spaceName,
             logo,
             organizationName,
-            businessCategory,
-            feedbackCollection,
-            testimonialCollection
+            businessCategory
         });
 
         const savedSpace = await newSpace.save();
@@ -31,12 +32,25 @@ const createSpace = async (req, res) => {
             return res.status(404).json({ message: "Client not found." });
         }
 
+        const newFeedbackForm = new FeedbackForm({ clientId: req.client.clientId, spaceId: savedSpace._id, formConfig: feedbackFormConfig, });
+        const savedFeedbackForm = await newFeedbackForm.save();
+        savedSpace.feedbackFormId = savedFeedbackForm._id;
+
+        const newTestimonialForm = new TestimonialForm({ clientId: req.client.clientId, spaceId: savedSpace._id, formConfig: testimonialFormConfig,  });
+        const savedTestimonialForm = await newTestimonialForm.save();
+        savedSpace.testimonialFormId = savedTestimonialForm._id;
+
+        await savedSpace.save();
         return res.status(201).json(savedSpace);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server error." });
     }
 };
+
+
+
+
 
 // Get all spaces for the authenticated client
 const getSpacesForAuthenticatedClient = async (req, res) => {
@@ -53,21 +67,24 @@ const getSpacesForAuthenticatedClient = async (req, res) => {
 // Generate form configuration
 const generateForm = async (req, res) => {
     try {
-        const { spaceConfig } = req.body;
+        const { prompt } = req.body;
+         const defaultPrefix = "Generate feedback form JSON configuration for";
+        const formattedPrompt = `${defaultPrefix} ${prompt}`;
+        // Generate form configuration based on the AI prompt
+        const feedbackFormConfig = await generateFormConfiguration(formattedPrompt);
 
-        // Here, you would implement the AI logic to generate the form structure based on spaceConfig
-        // For now, we'll mock a generated form
-        const generatedForm = {
-            formStructure: {
-                title: spaceConfig.spaceName,
-                fields: spaceConfig.fields || [],
-            },
+        const testimonialFormConfig = {
+            fields: [
+                { type: "text", name: "name", label: "Name", required: true },
+                { type: "text", name: "position", label: "Position", required: true },
+                { type: "textarea", name: "testimonial", label: "Testimonial", required: true },
+                { type: "image", name: "image", label: "Image", required: false }
+            ]
         };
 
-        return res.status(200).json(generatedForm);
+        res.json({ feedbackFormConfig, testimonialFormConfig });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Server error." });
+        res.status(500).json({ message: "Error generating form preview." });
     }
 };
 

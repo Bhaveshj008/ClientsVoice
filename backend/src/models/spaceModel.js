@@ -8,7 +8,8 @@ const spaceSchema = new mongoose.Schema({
     businessCategory: { type: String },
     feedbackCollection: { type: Boolean, default: false },
     testimonialCollection: { type: Boolean, default: false },
-    formConfig: { type: Object }, // For storing generated form structure
+    feedbackFormId: { type: mongoose.Schema.Types.ObjectId, ref: "FeedbackForm" },
+    testimonialFormId: { type: mongoose.Schema.Types.ObjectId, ref: "TestimonialForm" },
 }, { timestamps: true });
 
 module.exports = mongoose.model('spaces', spaceSchema);
