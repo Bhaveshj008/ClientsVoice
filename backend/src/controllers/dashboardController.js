@@ -1,19 +1,21 @@
-// src/controllers/dashboardController.js
 const Space = require('../models/spaceModel');
 
 exports.getDashboardData = async (req, res) => {
     try {
-        const userId = req.user.id; // assuming user ID is stored in req.user after authentication
-        const spaces = await Space.find({ userId });
+        const userId = req.client.clientId; 
+        const spaces = await Space.find({ clientId: userId }, 'spaceName logo');
+
         const spaceCount = spaces.length;
+        console.log(userId)
 
         // If no spaces exist, return an empty array
         if (spaceCount === 0) {
+            
             return res.status(200).json({
                 message: "No spaces found.",
                 spaces: [],
                 spaceCount: 0,
-                currentPlan: "Basic", // Change as per user plans
+                currentPlan: "Basic", 
             });
         }
 
@@ -22,7 +24,7 @@ exports.getDashboardData = async (req, res) => {
             message: "Spaces retrieved successfully.",
             spaces,
             spaceCount,
-            currentPlan: "Basic", // Change as per user plans
+            currentPlan: "Basic", 
         });
     } catch (error) {
         return res.status(500).json({ message: "Server error", error: error.message });

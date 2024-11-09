@@ -12,7 +12,7 @@ exports.register = async (req, res) => {
         const ClientExists = await Client.findOne({ email });
         if (ClientExists) return res.status(400).json({ message: 'Client already exists' });
 
-        // Logging the password before hashing to check its value
+       
         console.log("Password before hashing:", password);
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -38,7 +38,7 @@ exports.login = async (req, res) => {
                 clientId: client.clientId,
                 name: client.name,
                 email: client.email,
-                spaces: client.spaces // If you want to include the spaces as well
+                spaces: client.spaces
             },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
