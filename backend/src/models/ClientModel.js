@@ -6,6 +6,6 @@ const clientSchema = new mongoose.Schema({
     password: { type: String, required: true },
     spaces: [{ type: mongoose.Schema.Types.ObjectId, ref: 'spaces' }],
     registrationDate:{type: Date, default: Date.now()},
-    subscriptionPlan: { type: String, default: "none" } // Example roles: 'user', 'admin'
+    subscriptionPlan: { type: String, default: "none" } 
 },{ timestamps: true });
 module.exports = mongoose.model('Clients', clientSchema);

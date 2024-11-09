@@ -1,4 +1,4 @@
-// src/routes/dashboardRoutes.js
+
 const express = require('express');
 const { getDashboardData } = require('../controllers/dashboardController');
 const { verifyToken } = require('../middlewares/authMiddleware'); // Middleware to verify JWT
