@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
 import SpaceCard from './SpaceCard';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Header from '../Header';
 
 function Dashboard() {
   const [spaces, setSpaces] = useState([]);
   const [spaceCount, setSpaceCount] = useState(0);
-  const [currentPlan, setCurrentPlan] = useState('');
+  const [currentPlan, setCurrentPlan] = useState('N/A');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  // Fetch spaces and other data from the API
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
         const response = await api.get('/dashboard', {
-          headers: {
-            Authorization: `Bearer ${token}` 
-          }
+          headers: { Authorization: `Bearer ${token}` },
         });
+
         if (response) {
           setSpaces(response.data.spaces || []);
           setSpaceCount(response.data.spaceCount || 0);
@@ -27,85 +27,126 @@ function Dashboard() {
         }
       } catch (err) {
         console.error('Error fetching data:', err);
-        setError('An error occurred while fetching data.');
+        if (err.response?.status === 401) {
+          localStorage.removeItem('token');
+          navigate('/'); // Redirect to login
+        } else {
+          setError('Failed to fetch data. Please try again later.');
+        }
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [navigate]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  const handleEditSpace = (spaceId) => {
+    navigate(`/space/edit/${spaceId}`);
+  };
+
+  const handleDeleteSpace = (spaceId) => {
+    setSpaces((prevSpaces) => prevSpaces.filter((space) => space._id !== spaceId));
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-gray-400 text-lg">Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-red-500 text-lg">{error}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-veryDarkPurple min-h-screen text-almostWhite">
-      <div className="p-8">
-        <header className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-almostWhite">ClientsVoice</h1>
-          <nav className="flex space-x-6 text-lightLavender">
-            <a href="#features">Features</a>
-            <a href="#templates">Templates</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#blog">Blog</a>
-            <a href="#signin" className="hover:text-brightLavender">Sign in</a>
-            <button className="bg-brightLavender text-veryDarkPurple px-4 py-2 rounded-md">Try Free</button>
-          </nav>
-        </header>
+    <div className="bg-gray-900 min-h-screen text-white font-sans">
+      <Header />
+      <div className="container mx-auto p-4 md:p-8">
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="bg-darkPurple p-4 rounded-lg text-center">
-            {/* Placeholder for Pie Chart */}
-            <p className="text-lightLavender">Pie Chart</p>
-          </div>
-          <div className="bg-darkPurple p-4 rounded-lg text-center col-span-2">
-            {/* Placeholder for Bar Chart */}
-            <p className="text-lightLavender">Bar Chart</p>
-          </div>
-        </div>
+        <div className="container mx-auto max-w-screen-xl">
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          <DashboardCard title="Overview" type="pie" />
+          <DashboardCard title="Performance" type="bar" className="lg:col-span-2" />
+        </section>
 
-        <section className="mb-8">
+        {/* Spaces Section */}
+        <section className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-almostWhite">Spaces</h2>
-            <Link to="/create-space">
-            <button className="bg-brightLavender text-veryDarkPurple px-4 py-2 rounded-md">
-                + Create New Space
-            </button>
-        </Link>
+            <h2 className="text-2xl font-semibold">Spaces</h2>
+            <Link to="/space/create">
+              <button className="bg-purple-600 px-6 py-2 rounded hover:bg-purple-700 border border-purple-500 transition-all">
+                <b>+ Create New Space</b>
+              </button>
+            </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {spaces.length > 0 ? (
               spaces.map((space) => (
-                <SpaceCard key={space._id} space={space} />
+                <SpaceCard
+                  key={space._id}
+                  space={space}
+                  onEdit={handleEditSpace}
+                  onDelete={handleDeleteSpace}
+                />
               ))
             ) : (
-              <div className="text-center text-lightLavender col-span-3">
-                <p>No spaces yet.</p>
-                <p>Create your first space to start collecting testimonials.</p>
+              <div className="col-span-full">
+              <div className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700 hover:border-purple-500 transition-all">
+                <p className="text-gray-400 text-center text-lg">
+                  No spaces yet. 
+                  <span className="block mt-2 text-purple-400 font-semibold">
+                    Create your first space to start collecting testimonials and feedbacks.
+                  </span>
+                </p>
+                <div className="flex justify-center mt-4">
+                  <Link to="/space/create">
+                    <button className="bg-purple-600 px-6 py-2 rounded hover:bg-purple-700 border border-purple-500 transition-all">
+                      <b>+ Create New Space</b>
+                    </button>
+                  </Link>
+                </div>
               </div>
+            </div>
             )}
           </div>
         </section>
 
+        {/* Overview Section */}
         <section>
-          <h2 className="text-2xl font-bold text-almostWhite mb-4">Overview</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h2 className="text-2xl font-semibold mb-6">Overview</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <OverviewCard title="Total Spaces" value={spaceCount} />
             <OverviewCard title="Current Plan" value={currentPlan} />
           </div>
         </section>
       </div>
     </div>
+    </div>
   );
 }
 
-
+function DashboardCard({ title, type, className }) {
+  return (
+    <div
+      className={`bg-gray-800 p-6 rounded-lg shadow-lg text-center border border-gray-700 hover:shadow-xl hover:border-purple-500 hover:text-purple-300 transition-all ${className}`}
+    >
+      <p className="text-lg font-semibold">{title}</p>
+      <div className="mt-2 text-gray-400">{type === 'pie' ? 'Pie Chart' : 'Bar Chart'}</div>
+    </div>
+  );
+}
 
 function OverviewCard({ title, value }) {
   return (
-    <div className="bg-darkPurple p-4 rounded-lg text-center">
-      <h3 className="text-xl font-semibold text-almostWhite">{title}</h3>
-      <p className="text-lg text-brightLavender">{value}</p>
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center border border-gray-700 hover:shadow-xl hover:border-purple-500 hover:text-purple-300 transition-all">
+      <h3 className="text-xl font-semibold">{title}</h3>
+      <p className="text-lg text-gray-400">{value}</p>
     </div>
   );
 }

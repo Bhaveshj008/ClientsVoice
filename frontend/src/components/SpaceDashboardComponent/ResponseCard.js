@@ -1,12 +1,15 @@
 import React from 'react';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
+import { FaArchive } from 'react-icons/fa';
+import { MdUnarchive } from 'react-icons/md';
+import { Tooltip } from 'react-tooltip';
+import { FaCommentDots } from 'react-icons/fa';
 
 const ResponseCard = ({ testimonial, feedback, toggleLike, toggleArchive, openFeedbackModal }) => (
-  <div className="bg-gray-800 rounded-lg p-4 shadow-lg hover:shadow-2xl transition-all transform hover:scale-105">
-    <div className="flex items-center justify-between text-gray-400 text-xs mb-4">
-      <span>Submitted on: {new Date(testimonial.createdAt).toLocaleDateString()}</span>
-    </div>
-    <div className="flex items-center mb-4">
-      <div className="w-12 h-12 bg-gray-300 rounded-full flex-shrink-0 overflow-hidden">
+  <div className="bg-gray-800 rounded-lg p-6 shadow-lg hover:shadow-2xl hover:border-purple-500 border border-neutral-700 transition-all transform w-full mb-6">
+    {/* Profile Image and Content Container */}
+    <div className="flex items-start mb-4">
+      <div className="w-16 h-16 bg-gray-300 rounded-full overflow-hidden border-2 border-purple-500 mr-6">
         {testimonial.image ? (
           <img src={testimonial.image} alt="Profile" className="w-full h-full object-cover" />
         ) : (
@@ -15,18 +18,53 @@ const ResponseCard = ({ testimonial, feedback, toggleLike, toggleArchive, openFe
           </div>
         )}
       </div>
-      <div className="ml-3">
-        <h3 className="text-sm font-bold text-gray-100">{testimonial.responses.Name}</h3>
-        <p className="text-xs text-gray-400">Submitted by: {testimonial.responses.Email}</p>
+
+      {/* Testimonial Content */}
+      <div className="flex-1">
+        <h3 className="text-xl font-semibold text-white">{testimonial.responses.Name}</h3>
+        <p className="text-sm text-gray-400 mt-1">Submitted by: {testimonial.responses.Email}</p>
+        <p className="text-xs text-gray-500 mt-1">Submitted on: {new Date(testimonial.createdAt).toLocaleDateString()}</p>
+        <p className="text-sm text-gray-200 mt-4">{testimonial.responses.Testimonial}</p>
       </div>
     </div>
-    <p className="text-sm text-gray-200 mb-4">{testimonial.responses.Testimonial}</p>
-    <div className="flex items-center space-x-4">
-      <button onClick={() => toggleLike(testimonial._id)}>
-        {testimonial.liked ? "Dislike" : "Like"}
-      </button>
-      <button onClick={() => toggleArchive(testimonial._id)}> {testimonial.archived ? "Unarchive" : "Archive"}</button>
-      <button onClick={() => openFeedbackModal(feedback)} className="text-purple-300 text-sm">View Feedback</button>
+
+    {/* Action Buttons */}
+    <div className="flex justify-end mt-4 space-x-6">
+      {/* Like Button */}
+      <div className="relative">
+        <button 
+          onClick={() => toggleLike(testimonial._id)} 
+          className="text-red-500 hover:text-red-700 transition-colors"
+          data-tooltip-id="likeTooltip"
+        >
+          {testimonial.liked ? <AiFillHeart size={25} /> : <AiOutlineHeart size={25} />}
+        </button>
+        <Tooltip id="likeTooltip" place="top" content={testimonial.liked ? "Dislike" : "Like"} />
+      </div>
+
+      {/* Archive Button */}
+      <div className="relative">
+        <button 
+          onClick={() => toggleArchive(testimonial._id)} 
+          className="text-gray-300 hover:text-purple-400 transition-colors"
+          data-tooltip-id="archiveTooltip"
+        >
+          {testimonial.archived ? <MdUnarchive size={25} /> : <FaArchive size={25} />}
+        </button>
+        <Tooltip id="archiveTooltip" place="top" content={testimonial.archived ? "Unarchive" : "Archive"} />
+      </div>
+
+      {/* View Feedback Button */}
+      <div className="relative">
+        <button 
+          onClick={() => openFeedbackModal(feedback)} 
+          className="text-purple-300 text-sm hover:text-purple-500 transition-colors"
+          data-tooltip-id="feedbackTooltip"
+        >
+          <FaCommentDots size={25} />
+        </button>
+        <Tooltip id="feedbackTooltip" place="top" content="View Feedback" />
+      </div>
     </div>
   </div>
 );

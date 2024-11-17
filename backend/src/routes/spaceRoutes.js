@@ -1,18 +1,19 @@
 const express = require('express');
-const {createSpace, getSpacesForAuthenticatedClient, generateForm} = require('../controllers/spaceController');
+const {saveSpace, generateFormConfig, deleteSpace, getCompleteSpace} = require('../controllers/spaceController');
 const {verifyToken} = require('../middlewares/authMiddleware');
 const {getStats, getResponses, toggleLike, toggleArchive} = require('../controllers/spaceDashboardController');
 
 const router = express.Router();
 
 // Route to create a new space
-router.post('/createSpace', verifyToken, createSpace);
+router.post('/createSpace', verifyToken, saveSpace);
+router.put('/editSpace', verifyToken, saveSpace);
 
 // Route to get all spaces for the authenticated client
-router.get('/getSpace', verifyToken, getSpacesForAuthenticatedClient);
+
 
 // Route to generate form based on user input
-router.post('/generate-form', verifyToken, generateForm);
+router.post('/generate-form', verifyToken, generateFormConfig);
 
 
 
@@ -28,4 +29,8 @@ router.post('/:spaceID/testimonial/:testimonialID/like', verifyToken, toggleLike
 
 // Archive/Unarchive a testimonial
 router.post('/:spaceID/testimonial/:testimonialID/archive', verifyToken, toggleArchive);
+
+router.delete('/spaces/delete/:spaceID', verifyToken, deleteSpace);
+
+router.get('/space/:spaceId', verifyToken, getCompleteSpace)
 module.exports = router;
