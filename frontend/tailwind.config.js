@@ -10,11 +10,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        darkPurple: '#a61ba66f',
-        veryDarkPurple: '#15001f',
-        lightLavender: '#e7bffa',
-        brightLavender: '#d180f8',
-        almostWhite: '#fefefe',
+        darkGray: '#141619',    // Color 1
+        charcoal: '#2C2E3A',    // Color 2
+        navy: '#050A44',        // Color 3
+        royalBlue: '#0A21C0',   // Color 4
+        lightGray: '#B3B4BD',
       },
     },
   },

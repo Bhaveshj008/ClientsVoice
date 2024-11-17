@@ -45,18 +45,25 @@ const FieldRenderer = ({ field, handleInputChange, value }) => {
             // Checkbox
             case 'checkbox':
                 return (
-                    <label className="flex items-center space-x-2">
+                  <div>
+                    {field.options?.map((option, index) => (
+                      <label key={index} className="flex items-center space-x-2">
                         <input
-                            type="checkbox"
-                            id={field.id}
-                            required={field.required}
-                            className="mr-2"
-                            onChange={(e) => handleInputChange(field.id, e.target.checked)}
-                            style={{ ...field.style }}
+                          type="checkbox"
+                          id={field.id + '-' + index} // Unique ID for each checkbox
+                          name={field.name} // Optionally use a common name
+                          value={option.value}
+                          required={field.required}
+                          className="mr-2"
+                          onChange={(e) => handleInputChange(field.id, option.value, e.target.checked)} // Track individual checkbox changes
+                          style={{ ...field.style }}
                         />
-                        <span>{field.label}</span>
-                    </label>
+                        <span>{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
                 );
+              
             // Radio buttons
             case 'radio':
                 return (

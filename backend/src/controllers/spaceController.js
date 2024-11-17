@@ -2,143 +2,198 @@ const Space = require('../models/spaceModel');
 const Client = require('../models/ClientModel');
 const FeedbackForm = require('../models/FeedbackFormConfig');
 const TestimonialForm = require('../models/TestimonialFormConfig');
-const { generateFormConfiguration } = require('../services/openAiService');
+const { FeedbackResponse, TestimonialResponse } = require('../models/FormResponses');
+const { generateUniqueLink } = require('../services/uniqueLinkService');
+const { generateForm } = require('../services/formService');
+const { deleteSpaceData } = require('../services/deleteSpace');
 
+// Save or Update Space
+const saveSpace = async (req, res) => {
+  try {
+    const { method } = req;
+    const {
+      spaceId,
+      spaceName,
+      logo,
+      organizationName,
+      businessCategory,
+      feedbackFormConfig,
+      testimonialFormConfig,
+    } = req.body;
 
-
-async function generateUniqueLink(spaceName) {
-    
-    let uniqueLink = `${spaceName}`;
-    let counter = 1;
-
-
-    let existingSpace = await Space.findOne({ uniqueLink });
-
-    // If the link exists, append a number and check again
-    while (existingSpace) {
-        // Increment counter and modify the unique link
-        uniqueLink = `${spaceName}${counter}`;
-        counter++;
-        // Check again with the modified link
-        existingSpace = await Space.findOne({ uniqueLink });
+    if (!["POST", "PUT"].includes(method)) {
+      return res.status(405).json({ message: "Method not allowed." });
     }
 
-  
-    return uniqueLink;
-}
+    // Helper function to generate unique link and update space fields
+    const updateSpaceFields = async (space, newFields) => {
+      const { spaceName, logo, organizationName, businessCategory } = newFields;
 
+      // Update only if values are provided
+      if (spaceName) space.spaceName = spaceName;
+      if (logo) space.logo = logo;
+      if (organizationName) space.organizationName = organizationName;
+      if (businessCategory) space.businessCategory = businessCategory;
 
-const createSpace = async (req, res) => {
-    try {
-        const { spaceName, logo, organizationName, businessCategory, feedbackFormConfig, testimonialFormConfig } = req.body;
+      // Generate a new unique link if spaceName changes
+      if (spaceName) {
+        space.uniqueLink = await generateUniqueLink(spaceName);
+      }
 
-        // Generate a unique link for the space
-        const uniqueLink = await generateUniqueLink(spaceName);
-        console.log("Generated Unique Link:", uniqueLink);
+      return await space.save();
+    };
 
-        // Create a new Space instance with all the required fields, including uniqueLink
-        const newSpace = new Space({
-            clientId: req.client.clientId,
-            spaceName,
-            logo,
-            organizationName,
-            businessCategory,
-            uniqueLink 
-        });
-        console.log("New Space (before saving):", newSpace);
+    // Helper function to update form configurations
+    const updateFormConfig = async (formId, formConfig, FormModel) => {
+      if (formConfig && formId) {
+        await FormModel.findByIdAndUpdate(formId, { formConfig }, { new: true });
+      }
+    };
 
-        // Save the new Space to the database
-        const savedSpace = await newSpace.save();
-        console.log("Saved Space:", savedSpace);
+    let space;
 
-        // Update the client with the new space ID
-        const updatedClient = await Client.findOneAndUpdate(
-            { clientId: req.client.clientId }, 
-            { $push: { spaces: savedSpace._id } }, 
-            { new: true } 
-        );
+    if (method === "POST") {
+      if (!spaceName || !logo || !organizationName || !businessCategory) {
+        return res.status(400).json({ message: "Missing required fields for creating a space." });
+      }
 
-        if (!updatedClient) {
-            console.error("Client not found during update. Client ID:", req.client.clientId);
-            return res.status(404).json({ message: "Client not found." });
-        }
+      // Create new Space
+      space = new Space({
+        clientId: req.client.clientId,
+        spaceName,
+        logo,
+        organizationName,
+        businessCategory,
+        uniqueLink: await generateUniqueLink(spaceName),
+      });
 
-        // Create and save Feedback Form and Testimonial Form documents
-        const newFeedbackForm = new FeedbackForm({ clientId: req.client.clientId, spaceId: savedSpace._id, formConfig: feedbackFormConfig });
-        const savedFeedbackForm = await newFeedbackForm.save();
-        savedSpace.feedbackFormId = savedFeedbackForm._id;
+      const savedSpace = await space.save();
 
-        const newTestimonialForm = new TestimonialForm({ clientId: req.client.clientId, spaceId: savedSpace._id, formConfig: testimonialFormConfig });
-        const savedTestimonialForm = await newTestimonialForm.save();
-        savedSpace.testimonialFormId = savedTestimonialForm._id;
+      // Link space to client
+      await Client.findOneAndUpdate(
+        { clientId: req.client.clientId },
+        { $push: { spaces: savedSpace._id } },
+        { new: true }
+      );
 
-        // Save the updated space with feedbackFormId and testimonialFormId
-        await savedSpace.save();
+      // Create Feedback and Testimonial Forms
+      const feedbackForm = new FeedbackForm({
+        clientId: req.client.clientId,
+        spaceId: savedSpace._id,
+        formConfig: feedbackFormConfig,
+      });
+      const testimonialForm = new TestimonialForm({
+        clientId: req.client.clientId,
+        spaceId: savedSpace._id,
+        formConfig: testimonialFormConfig,
+      });
 
-        return res.status(201).json(savedSpace);
-    } catch (error) {
-        console.error("Error creating space:", error);
-        return res.status(500).json({ message: "Server error." });
+      const [savedFeedbackForm, savedTestimonialForm] = await Promise.all([
+        feedbackForm.save(),
+        testimonialForm.save(),
+      ]);
+
+      // Assign form IDs to the space and save
+      Object.assign(savedSpace, {
+        feedbackFormId: savedFeedbackForm._id,
+        testimonialFormId: savedTestimonialForm._id,
+      });
+      await savedSpace.save();
+
+      return res.status(201).json(savedSpace);
+
+    } else if (method === "PUT") {
+      if (!spaceId) {
+        return res.status(400).json({ message: "Space ID is required for updating." });
+      }
+
+      // Find the space
+      space = await Space.findById(spaceId);
+      if (!space) {
+        return res.status(404).json({ message: "Space not found." });
+      }
+
+      // Update space fields
+      const updatedSpace = await updateSpaceFields(space, {
+        spaceName,
+        logo,
+        organizationName,
+        businessCategory,
+      });
+
+      // Update Feedback and Testimonial Form configurations
+      await Promise.all([
+        updateFormConfig(space.feedbackFormId, feedbackFormConfig, FeedbackForm),
+        updateFormConfig(space.testimonialFormId, testimonialFormConfig, TestimonialForm),
+      ]);
+
+      return res.status(200).json(updatedSpace);
     }
+  } catch (error) {
+    console.error("Error handling space:", error);
+    return res.status(500).json({ message: `Server error: ${error.message}` });
+  }
 };
 
 
+// Generate Form
+const generateFormConfig = async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    const feedbackFormConfig = await generateForm(prompt);
+    const testimonialFormConfig = {
+      fields: [
+        { id: 'TestimonialName', type: 'text', name: 'name', label: 'Name', required: true },
+        { id: 'TestimonialEmail', type: 'email', name: 'email', label: 'Email', required: true },
+        { id: 'TestimonialPosition', type: 'text', name: 'position', label: 'Position', required: true },
+        { id: 'TestimonialTextArea', type: 'textarea', name: 'testimonial', label: 'Testimonial', required: true },
+        { id: 'TestimonialImage', type: 'file', name: 'image', label: 'Image', required: false },
+      ],
+    };
 
+    res.json({ feedbackFormConfig, testimonialFormConfig });
+  } catch (error) {
+    res.status(500).json({ message: 'Error generating form preview.' });
+  }
+};
 
-// Get all spaces for the authenticated client
-const getSpacesForAuthenticatedClient = async (req, res) => {
-    try {
-        const spaces = await Space.find({ clientId: req.client.clientId });
-        console.log("Retrieved Spaces:", spaces); 
-        return res.status(200).json(spaces);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Server error." });
+// Delete Space and Related Data
+const deleteSpace = async (req, res) => {
+  const { spaceID } = req.params;
+  try {
+    const responseDetails = await deleteSpaceData(req.client.clientId, spaceID);
+    res.status(200).json({ message: 'Space and related data deleted successfully.', details: responseDetails });
+  } catch (error) {
+    console.error('Error deleting space:', error);
+    res.status(500).json({ message: 'Failed to delete space and related data.', error: error.message });
+  }
+};
+
+// Get Complete Space Data
+const getCompleteSpace = async (req, res)=>{
+  const { spaceId } = req.params;
+  try {
+    // Fetch the space document
+    const space = await Space.findById(spaceId);
+
+    if (!space) {
+      return res.status(404).json({ message: 'Space not found' });
     }
-};
 
-// Generate form configuration
-const generateForm = async (req, res) => {
-    try {
-        const { prompt } = req.body;
-        const defaultPrefix = "Generate a JSON configuration for a feedback form that includes fields appropriate to";
-        const defaultSuffix =`Please generate the following JSON configuration for a feedback form:
-         {
-            "feedbackFormConfig": [
-              {
-                
-              }
-            ]
-          }
-        }
-        
-        Instructions:
-        1. Use HTML5 input types where appropriate, including checkboxes, dropdowns, radio buttons, file uploads, and range sliders.
-        2. Each field must include a unique 'id' attribute, even for dropdown items.
-        3. Ensure the JSON structure is not deeply nested; all fields should be directly within the 'feedbackForm' array of a single 'feedbackFormConfig'.
-        4. Follow the exact format provided above without modification.`;
-        const formattedPrompt = `${defaultPrefix} ${prompt} ${defaultSuffix}`;
-      
-        const feedbackFormConfig = await generateFormConfiguration(formattedPrompt);
-
-        const testimonialFormConfig = {
-            fields: [
-                { id:"TestimonialName", type: "text", name: "name", label: "Name", required: true },
-                { id:"TestimonialEmail", type: "email", name: "email", label: "Email", required: true },
-                { id:"TestimonialEmail", type: "text", name: "position", label: "Position", required: true },
-                { id:"TestimonialTextArea", type: "textarea", name: "testimonial", label: "Testimonial", required: true },
-                { id:"TestimonialImage", type: "file", name: "image", label: "Image", required: false }
-            ]
-        };
-
-        res.json({ feedbackFormConfig, testimonialFormConfig });
-    } catch (error) {
-        res.status(500).json({ message: "Error generating form preview." });
+    const [feedbackFormConfig, testimonialFormConfig] = await Promise.all([
+      FeedbackForm.findOne({ spaceId: spaceId }),
+      TestimonialForm.findOne({ spaceId: spaceId }),
+    ]);
+    const formConfig = {
+      feedbackFormConfig: {feedbackFormConfig: feedbackFormConfig.formConfig.fields},
+      testimonialFormConfig: {fields:testimonialFormConfig.formConfig.fields},
     }
+
+    res.json({space, formConfig });
+  }catch (error) {
+    console.error('Error fetching space data:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
-module.exports = {
-    createSpace,
-    getSpacesForAuthenticatedClient,
-    generateForm,
-};
+module.exports = { saveSpace, generateFormConfig, deleteSpace, getCompleteSpace };

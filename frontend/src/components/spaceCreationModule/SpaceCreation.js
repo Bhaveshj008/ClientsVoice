@@ -1,12 +1,23 @@
-import React from "react";
+import React , {useEffect} from "react";
 import { FormProvider } from "./utils/FormContext"; // Import the FormProvider
-import Header from "./components/Header";
+import Header from "../Header";
 import LeftSidebar from "./components/LeftSidebar";
-import RightSidebar from "./components/RightSidebar";
+import RightSidebar from "./components/RightSidebar/RightSidebar";
 import MainContainer from "./components/MainContainer";
 
 
-function SpaceCreation() {
+function SpaceCreation({mode, initialData}) {
+  const token = localStorage.getItem('token');
+  
+  // Handle token validation and redirect if needed
+  useEffect(() => {
+    if (!token) {
+      console.warn('No token found, redirecting to login.');
+      localStorage.removeItem('token');
+      window.location.href = '/';
+      return; 
+    }
+  }, [token]);
   
   return (
     <FormProvider> {/* Wrap the component tree with FormProvider */}
@@ -15,7 +26,7 @@ function SpaceCreation() {
         <div className="flex flex-grow">
           <LeftSidebar/>
           <MainContainer  />
-          <RightSidebar />
+          <RightSidebar mode={mode} initialData={initialData}/>
         </div>
       </div>
     </FormProvider>

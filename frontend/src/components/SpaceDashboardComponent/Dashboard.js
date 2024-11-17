@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import Header from './Header';
+import Header from '../Header';
 import Sidebar from './Sidebar';
 import FeedbackModal from './FeedbackModal';
 import ResponseCard from './ResponseCard';
 import StatsHeader from './StatsHeader';
-import EmbeddableWidget from './EmbeddebleWidget'; // Import EmbeddableWidget
+import EmbeddableWidget from './EmbeddebleWidget';
 import api from '../api';
 
 const Dashboard = () => {
@@ -15,16 +15,28 @@ const Dashboard = () => {
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filter, setFilter] = useState('All');
-  const [activeComponent, setActiveComponent] = useState('dashboard'); // Add activeComponent state
+  const [activeComponent, setActiveComponent] = useState('dashboard');
   const { spaceID } = useParams();
 
   const token = localStorage.getItem('token');
-  if (!token) throw new Error('No token found');
-
+  
+  // Handle token validation and redirect if needed
   useEffect(() => {
-    fetchStats();
-    fetchResponses();
-  }, [spaceID]);
+    if (!token) {
+      console.warn('No token found, redirecting to login.');
+      localStorage.removeItem('token');
+      window.location.href = '/';
+      return; 
+    }
+  }, [token]);
+
+ 
+  useEffect(() => {
+    if (token && spaceID) {
+      fetchStats();
+      fetchResponses();
+    }
+  }, [spaceID, token]);  
 
   const fetchStats = async () => {
     try {
@@ -80,27 +92,29 @@ const Dashboard = () => {
     setIsModalOpen(false);
   };
 
+  // Filter the responses based on the filter state
   const filteredResponses = responses.filter(({ testimonial }) => {
     if (filter === 'Liked') return testimonial.liked;
     if (filter === 'Archived') return testimonial.archived;
-    return !testimonial.archived;
+    return !testimonial.archived;  // Default is to show non-archived
   });
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-200 font-sans">
+    <div className="min-h-screen bg-gray-900 text-white font-sans">
       <Header />
       <div className="flex">
         <Sidebar 
           filter={filter} 
           setFilter={setFilter} 
           spaceURL={totalStats.spaceURL} 
-          setActiveComponent={setActiveComponent} // Pass setActiveComponent to Sidebar
+          setActiveComponent={setActiveComponent} 
         />
-        <main className="flex-1 p-6 space-y-6">
-          {activeComponent === 'dashboard' ? ( // Conditional rendering for dashboard view
+        <main className="flex-1 max-w-screen-lg xl:max-w-screen-xl p-6 space-y-6 mx-auto">
+          {activeComponent === 'dashboard' ? (
             <>
-              <StatsHeader totalStats={totalStats} />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <StatsHeader totalStats={totalStats} spaceId={spaceID}/>
+              <div className="space-y-6">
+                {/* Loop through filtered responses to display them */}
                 {filteredResponses.map(({ feedback, testimonial }, index) => (
                   <ResponseCard
                     key={index}
@@ -114,7 +128,6 @@ const Dashboard = () => {
               </div>
             </>
           ) : (
-            // Render EmbeddableWidget when activeComponent is set to 'wallOfLove'
             <EmbeddableWidget spaceID={spaceID} />
           )}
         </main>

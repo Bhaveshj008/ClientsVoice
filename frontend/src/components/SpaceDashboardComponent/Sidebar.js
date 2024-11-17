@@ -1,17 +1,15 @@
 import React from 'react';
-
+import { AiOutlineHeart } from 'react-icons/ai'; // Importing an icon for added visual appeal
 
 const Sidebar = ({ filter, setFilter, spaceURL, setActiveComponent }) => {
-   
-
     return (
-        <aside className="w-full lg:w-1/4 p-6 bg-gray-800 text-gray-100">
-            <h2 className="font-semibold text-xl mb-6">Space Details</h2>
-            <p className="text-sm mb-6">
+        <aside className="w-full lg:w-1/4 p-6 bg-gradient-to-b from-gray-900 to-black text-gray-200 border-r border-gray-800 shadow-lg">
+            <h2 className="font-semibold text-xl mb-6 text-gray-100 border-b border-gray-700 pb-2">Space Details</h2>
+            <p className="text-sm mb-6 text-gray-400">
                 Public URL:
                 <a 
                     href={`http://localhost:3000/form/${spaceURL}`} 
-                    className="underline text-blue-500" 
+                    className="block mt-1 underline text-blue-500 hover:text-blue-400 break-words" 
                     target="_blank" 
                     rel="noopener noreferrer"
                 >
@@ -19,28 +17,34 @@ const Sidebar = ({ filter, setFilter, spaceURL, setActiveComponent }) => {
                 </a>
             </p>
 
-            <nav className="space-y-3">
-                <p className="font-bold text-gray-300 mb-2">Inbox</p>
-                <ul className="space-y-2 text-sm">
-                    {['All', 'Liked', 'Archived'].map((item) => (
-                        <li key={item}>
-                            <button
-                                onClick={() => setFilter(item)}
-                                className={`block w-full text-left p-2 rounded-lg hover:bg-gray-700 transition-all ${
-                                    filter === item ? 'bg-gray-700 text-purple-300' : ''
-                                }`}
-                            >
-                                {item}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-                <p
-                    onClick={() => setActiveComponent('wallOfLove')} // Set the active component to 'wallOfLove'
-                    className="font-bold text-gray-300 mb-2 cursor-pointer"
+            <nav className="space-y-8">
+                <div className="space-y-2">
+                    <p className="font-semibold text-gray-300 mb-2 border-b border-gray-700 pb-1">Inbox</p>
+                    <ul className="space-y-2">
+                        {['All', 'Liked', 'Archived'].map((item) => (
+                            <li key={item}>
+                                <button
+                                    onClick={() => setFilter(item)}
+                                    className={`block w-full text-left px-3 py-2 rounded-lg border border-gray-700 transition-all duration-150 ${
+                                        filter === item 
+                                            ? ' border-purple-500 text-purple-300' 
+                                            : 'border-gray-700 text-gray-400   hover:border-purple-500 hover:text-white'
+                                    }`}
+                                >
+                                    {item}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                
+                <div 
+                    onClick={() => setActiveComponent('wallOfLove')} 
+                    className="flex items-center space-x-2 font-semibold text-gray-300 cursor-pointer border border-gray-700 rounded-lg p-3 hover:border-purple-500 hover:text-purple-300 transition-all duration-150"
                 >
-                    Wall of Love
-                </p>
+                    <AiOutlineHeart className="text-purple-500" /> {/* Heart icon for added visual appeal */}
+                    <span>Wall of Love</span>
+                </div>
             </nav>
         </aside>
     );

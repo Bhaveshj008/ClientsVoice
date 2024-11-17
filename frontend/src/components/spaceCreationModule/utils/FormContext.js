@@ -6,6 +6,7 @@ export const FormContext = createContext();
 export function FormProvider({ children }) {
   const [activeForm, setActiveForm] = useState('feedback');
   const [spaceName, setSpaceName] = useState(''); // Shared space name for all forms
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Initial empty form configurations
   const [formConfigs, setFormConfigs] = useState({
@@ -52,6 +53,7 @@ export function FormProvider({ children }) {
   };
 
   const handleLogoChange = (file) => {
+    
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -122,6 +124,9 @@ export function FormProvider({ children }) {
     feedbackFormConfig: formConfigs.feedback,
     testimonialFormConfig: formConfigs.testimonial,
   });
+  const toggleIsGenerating = (value) => {
+    setIsGenerating(value);
+  };
 
   return (
     <FormContext.Provider value={{
@@ -140,6 +145,9 @@ export function FormProvider({ children }) {
       selectField,
       updateFormConfigFromApi,
       getFormConfigs, // Expose the method to get form configurations
+      toggleIsGenerating,
+      isGenerating
+
     }}>
       {children}
     </FormContext.Provider>

@@ -1,122 +1,189 @@
 import React, { useState, useContext } from "react";
 import { FormContext } from '../utils/FormContext';
+import { addOption, removeOption, updateOption } from '../utils/optionHandlers';
+import { AiOutlinePlus, AiOutlineClose, AiOutlineDelete, AiOutlineTool } from 'react-icons/ai';
 
 function LeftSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { formConfig, addField, updateField, removeField, selectedFieldId, selectField } = useContext(FormContext);
+  const { formConfig, addField, updateField, removeField, selectedFieldId } = useContext(FormContext);
 
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
+  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+
+  const handleAddOption = (fieldId) => {
+    const field = formConfig.fields.find(f => f.id === fieldId);
+    updateField(fieldId, 'options', addOption(field.options || []));
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const handleRemoveOption = (fieldId, index) => {
+    const field = formConfig.fields.find(f => f.id === fieldId);
+    updateField(fieldId, 'options', removeOption(field.options, index));
+  };
+
+  const handleUpdateOption = (fieldId, index, key, value) => {
+    const field = formConfig.fields.find(f => f.id === fieldId);
+    updateField(fieldId, 'options', updateOption(field.options, index, key, value));
+  };
+
+  const handleUpdateField = (fieldId, key, value) => {
+    updateField(fieldId, key, value);
   };
 
   return (
-    <div className={` ${isCollapsed ? "w-16" : "w-1/4"} bg-gray-100 p-4 border-r border-gray-300 transition-all duration-300 ease-in-out`}>
-      <button onClick={toggleSidebar} className="text-gray-600 focus:outline-none mb-4">
-        {isCollapsed ? ">>" : "<<"}
-      </button>
+    <div className={` ${isCollapsed ? "w-16" : "w-1/4"} bg-gray-900 p-4 border-r border-gray-700 transition-all duration-300 ease-in-out`}>
+      {/* Toggle Button */}
+      <button onClick={toggleSidebar} className="text-gray-400 hover:text-gray-200 focus:outline-none mb-6">
+      <div className="flex items-center mb-6">
+  {isCollapsed ? (
+    <AiOutlineTool size={30} />
+  ) : (
+    <>
+      <AiOutlineTool size={30} className="mr-2" />
+      <h2 className="text-xl font-semibold text-gray-200">Customize Form</h2>
+    </>
+  )}
+</div>
+</button>
 
       {!isCollapsed && (
         <div>
-          <h2 className="text-xl font-semibold mb-4">Customize Form</h2>
-          <div className="relative">
+          
+
+          {/* Dropdown for Adding Fields */}
+          <div className="relative mb-6">
             <button
               onClick={toggleDropdown}
-              className="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200 flex justify-between items-center"
+              className="w-full border border-neutral-700 text-white font-semibold py-2 px-4 rounded hover:border-purple-500 hover:text-purple-300 transition duration-200 flex justify-between items-center"
             >
               Add Field
               <span className="ml-2">{isDropdownOpen ? "▲" : "▼"}</span>
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg">
+              <div className="absolute z-10 mt-2 w-full bg-gray-800 border border-purple-500 rounded shadow-lg">
                 <ul className="py-1">
-                  <li onClick={() => { addField('text'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Text Field</li>
-                  <li onClick={() => { addField('email'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Email Field</li>
-                  <li onClick={() => { addField('select'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Select Field</li>
-                  <li onClick={() => { addField('textarea'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Textarea Field</li>
-                  <li onClick={() => { addField('number'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Number Field</li>
-                  <li onClick={() => { addField('date'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Date Field</li>
-                  <li onClick={() => { addField('checkbox'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Checkbox</li>
-                  <li onClick={() => { addField('radio'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Radio Button Group</li>
-                  <li onClick={() => { addField('file'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">File Upload</li>
-                  <li onClick={() => { addField('password'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Password Field</li>
-                  <li onClick={() => { addField('tel'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Phone Number Field</li>
-                  <li onClick={() => { addField('url'); setIsDropdownOpen(false); }} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">URL Field</li>
+                  {['text', 'email', 'select', 'textarea', 'number', 'date', 'checkbox', 'radio', 'file', 'password', 'tel', 'url'].map((type) => (
+                    <li
+                      key={type}
+                      onClick={() => { addField(type); setIsDropdownOpen(false); }}
+                      className="px-4 py-2 hover:bg-purple-500 cursor-pointer text-white text-sm"
+                    >
+                      {`${type.charAt(0).toUpperCase() + type.slice(1)} Field`}
+                    </li>
+                  ))}
                 </ul>
               </div>
             )}
           </div>
 
-
+          {/* Field Customization Section */}
           {selectedFieldId && formConfig.fields.length > 0 && (
-            <div className="mt-4">
+            <div className="space-y-6">
               {formConfig.fields.map((field) => (
                 field.id === selectedFieldId && (
-                  <div key={field.id} className="mb-4 border-b pb-2">
-                    <h3 className="font-semibold text-gray-700">{field.label}</h3>
+                  <div key={field.id} className="p-4 bg-gray-700 rounded-lg border border-gray-600">
+                    <h3 className="text-lg font-semibold text-white mb-4">{field.label}</h3>
 
-                    <div className="mt-2">
-                      <label className="block text-sm text-gray-600">Label</label>
+                    {/* Label */}
+                    <div className="mb-4">
+                      <label className="block text-sm text-gray-300 mb-1">Label</label>
                       <input
                         type="text"
-                        className="mt-1 p-2 w-full border border-gray-300 rounded"
                         value={field.label}
-                        onChange={(e) => updateField(field.id, 'label', e.target.value)}
+                        onChange={(e) => handleUpdateField(field.id, 'label', e.target.value)}
+                        className="p-2 w-full bg-gray-800 border border-gray-600   rounded text-white"
                       />
+                    </div>
 
-                      <label className="block text-sm text-gray-600 mt-2">Placeholder</label>
+                    {/* Placeholder */}
+                    <div className="mb-4">
+                      <label className="block text-sm text-gray-300 mb-1">Placeholder</label>
                       <input
                         type="text"
-                        className="mt-1 p-2 w-full border border-gray-300 rounded"
-                        value={field.placeholder || ""}
-                        onChange={(e) => updateField(field.id, 'placeholder', e.target.value)}
+                        value={field.placeholder || ''}
+                        onChange={(e) => handleUpdateField(field.id, 'placeholder', e.target.value)}
+                        className="p-2 w-full bg-gray-800 border border-gray-600 rounded text-white"
                       />
+                    </div>
 
-                      <label className="block text-sm text-gray-600 mt-2">Required</label>
+                    {/* Required Checkbox */}
+                    <div className="mb-4 flex items-center">
                       <input
                         type="checkbox"
-                        checked={field.required}
-                        onChange={() => updateField(field.id, 'required', !field.required)}
+                        checked={field.required || false}
+                        onChange={(e) => handleUpdateField(field.id, 'required', e.target.checked)}
+                        className="mr-2"
                       />
+                      <label className="text-sm text-gray-300">Required</label>
+                    </div>
 
-                      <label className="block text-sm text-gray-600 mt-2">Font Size</label>
+                    {/* Font Size */}
+                    <div className="mb-4">
+                      <label className="block text-sm text-gray-300 mb-1">Font Size</label>
                       <input
                         type="text"
-                        className="mt-1 p-2 w-full border border-gray-300 rounded"
+                        className="p-2 w-full bg-gray-800 border border-gray-600 rounded text-white"
                         value={field.styles?.fontSize || "16px"}
-                        onChange={(e) =>
-                          updateField(field.id, 'styles', {
-                            ...field.styles,
-                            fontSize: e.target.value,
-                          })
-                        }
+                        onChange={(e) => updateField(field.id, 'styles', { ...field.styles, fontSize: e.target.value })}
                       />
+                    </div>
 
-                      <label className="block text-sm text-gray-600 mt-2">Background Color</label>
+                    {/* Background Color */}
+                    <div className="mb-4">
+                      <label className="block text-sm text-gray-300 mb-1">Background Color</label>
                       <input
                         type="color"
-                        className="mt-1 p-2 w-full border border-gray-300 rounded"
+                        className="p-2 w-full bg-gray-800 border border-gray-600 rounded"
                         value={field.styles?.backgroundColor || "#ffffff"}
-                        onChange={(e) =>
-                          updateField(field.id, 'styles', {
-                            ...field.styles,
-                            backgroundColor: e.target.value,
-                          })
-                        }
+                        onChange={(e) => updateField(field.id, 'styles', { ...field.styles, backgroundColor: e.target.value })}
                       />
-
-                      <button
-                        onClick={() => removeField(field.id)}
-                        className="text-red-500 mt-2 hover:underline"
-                      >
-                        Delete
-                      </button>
                     </div>
+
+                    {/* Options for Select, Radio, Checkbox */}
+                    {['select', 'radio', 'checkbox'].includes(field.type) && (
+                      <div className="mb-4">
+                        <label className="block text-sm text-gray-300 mb-2">Options</label>
+                        {field.options && field.options.map((option, index) => (
+                          <div key={index} className="flex items-center mb-2">
+                            <input
+                              type="text"
+                              placeholder="Label"
+                              value={option.label}
+                              className="mr-2 p-2 w-1/2 bg-gray-800 border border-gray-600 rounded text-white"
+                              onChange={(e) => handleUpdateOption(field.id, index, 'label', e.target.value)}
+                            />
+                            <input
+                              type="text"
+                              placeholder="Value"
+                              value={option.value}
+                              className="mr-2 p-2 w-1/2 bg-gray-800 border border-gray-600 rounded text-white"
+                              onChange={(e) => handleUpdateOption(field.id, index, 'value', e.target.value)}
+                            />
+                            <button
+                              className="text-red-500 hover:text-red-700"
+                              onClick={() => handleRemoveOption(field.id, index)}
+                            >
+                              <AiOutlineClose size={18} />
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          className="text-purple-400 mt-2 flex items-center hover:text-purple-300"
+                          onClick={() => handleAddOption(field.id)}
+                        >
+                          <AiOutlinePlus size={16} className="mr-1" /> Add Option
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Delete Field */}
+                    <button
+                      onClick={() => removeField(field.id)}
+                      className="text-red-500 hover:text-red-700 flex items-center mt-4"
+                    >
+                      <AiOutlineDelete size={18} className="mr-2" /> Delete Field
+                    </button>
                   </div>
                 )
               ))}

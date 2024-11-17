@@ -39,16 +39,21 @@
         // Selection Inputs
         case 'checkbox':
           return (
-            <label>
-              <input
-                type="checkbox"
-                name={field.name}
-                required={field.required}
-                style={field.styles}
-                onChange={handleChange}
-              />
-              {field.label}
-            </label>
+            <div>
+              {field.options?.map((option, index) => (
+                <label key={index} className="inline-flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name={field.name}
+                    value={option.value}
+                    required={field.required}
+                    style={field.styles}
+                    onChange={handleChange}
+                  />
+                  <span>{option.label}</span>
+                </label>
+              ))}
+            </div>
           );
         case 'radio':
           return (
