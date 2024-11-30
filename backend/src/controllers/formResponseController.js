@@ -24,6 +24,7 @@ exports.submitFormData = async (req, res) => {
 
         // Save testimonial responses in the TestimonialResponses schema
         if (testimonialFormData) {
+            console.log(testimonialFormData)
             const testimonialResponse = new TestimonialResponse({
                 spaceId: space._id,
                 responses: testimonialFormData

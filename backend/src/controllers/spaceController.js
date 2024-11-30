@@ -68,6 +68,7 @@ const saveSpace = async (req, res) => {
       });
 
       const savedSpace = await space.save();
+      console.log(savedSpace)
 
       // Link space to client
       await Client.findOneAndUpdate(
@@ -147,7 +148,7 @@ const generateFormConfig = async (req, res) => {
         { id: 'TestimonialEmail', type: 'email', name: 'email', label: 'Email', required: true },
         { id: 'TestimonialPosition', type: 'text', name: 'position', label: 'Position', required: true },
         { id: 'TestimonialTextArea', type: 'textarea', name: 'testimonial', label: 'Testimonial', required: true },
-        { id: 'TestimonialImage', type: 'file', name: 'image', label: 'Image', required: false },
+        { id: 'TestimonialImage', type: 'file', name: 'image', label: 'Image',accept: 'image/*', multiple: false},
       ],
     };
 
