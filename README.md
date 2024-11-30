@@ -26,23 +26,18 @@
 
 - **Frontend**: 
   - **React**: For building user interfaces with a component-based architecture.
-  - **Next.js**: For server-side rendering and static site generation, improving SEO and performance.
   - **Tailwind CSS**: For utility-first CSS styling, allowing for rapid design without leaving the HTML.
 
 - **Backend**: 
   - **Node.js**: JavaScript runtime for building the server-side application.
   - **Express**: Web framework for Node.js, facilitating API development and middleware integration.
-  - **Zod**: TypeScript-first schema declaration and validation library to ensure data integrity.
-  - **GraphQL**: For API communication, allowing clients to request only the data they need, improving efficiency.
+  - **JWT Authentication**: Provides secure login and authorization mechanisms for businesses.
 
 - **Database**: 
   - **MongoDB**: NoSQL database for flexible schema design and easy scalability. Stores user data, feedback, and testimonials.
 
 - **AI Integration**: 
-  - **OpenAI API**: Utilized for AI-driven form generation, enabling dynamic question creation based on user input and context.
-
-- **TypeScript**: 
-  - A superset of JavaScript that provides static typing, enhancing code reliability and maintainability.
+  - **Gemini API**: Utilized for AI-driven form generation, enabling dynamic question creation based on user input and context.
 
 ---
 
@@ -81,25 +76,6 @@ The Data Flow Diagram illustrates how data moves through the ClientsVoice system
 - **📊 Actionable Insights**: Feedback is transformed into visual insights, allowing for informed business decisions.
 - **🔒 Data Security**: User data is encrypted and securely stored, ensuring compliance with data protection regulations.
 - **💻 Write Less Code**: Integrate seamlessly by embedding our widget code, allowing you to display testimonials anywhere on your website with minimal coding effort.
-
----
-
-## 🗂️ API Endpoints
-
-### **GraphQL API**
-- **Form Generation**: 
-  - `mutation createForm($input: FormInput!)`: Generates a custom feedback form.
-  
-- **Submit Feedback**: 
-  - `mutation submitFeedback($input: FeedbackInput!)`: Submits customer feedback and testimonials.
-
-- **Get Testimonials**: 
-  - `query getTestimonials($businessId: ID!)`: Retrieves testimonials for a specific business.
-
-### **REST API (for legacy support)**
-- **GET /api/forms**: Fetches available forms for businesses.
-- **POST /api/feedback**: Submits feedback data.
-
 ---
 
 ## 📌 Conclusion
