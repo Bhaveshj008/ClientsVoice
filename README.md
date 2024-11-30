@@ -22,8 +22,6 @@
 
 ## 🛠️ Tech Stack
 
-![ClientsVoice Overview](TechStack/image.png) 
-
 - **Frontend**: 
   - **React**: For building user interfaces with a component-based architecture.
   - **Tailwind CSS**: For utility-first CSS styling, allowing for rapid design without leaving the HTML.
