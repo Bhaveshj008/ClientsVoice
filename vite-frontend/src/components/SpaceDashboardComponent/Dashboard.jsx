@@ -8,6 +8,7 @@ import ResponseCard from './ResponseCard';
 import StatsHeader from './StatsHeader';
 import EmbeddableWidget from '../WidgetComponent/EmbeddebleWidget';
 import api from '../api';
+import EmptyState from './EmptyState';
 
 const Dashboard = () => {
   const [totalStats, setTotalStats] = useState({ totalFeedbacks: 0, totalTestimonials: 0 });
@@ -20,17 +21,6 @@ const Dashboard = () => {
 
   const token = localStorage.getItem('token');
   
-  // Handle token validation and redirect if needed
-  useEffect(() => {
-    if (!token) {
-      console.warn('No token found, redirecting to login.');
-      localStorage.removeItem('token');
-      window.location.href = '/';
-      return; 
-    }
-  }, [token]);
-
- 
   useEffect(() => {
     if (token && spaceID) {
       fetchStats();
@@ -43,6 +33,7 @@ const Dashboard = () => {
       const response = await api.get(`${spaceID}/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log(response.data)
       setTotalStats(response.data);
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -107,30 +98,34 @@ const Dashboard = () => {
           filter={filter} 
           setFilter={setFilter} 
           spaceURL={totalStats.spaceURL} 
+          spaceName={totalStats.spaceName} 
+          spaceLogo={totalStats.logo} 
           setActiveComponent={setActiveComponent} 
         />
         <main className="flex-1 max-w-[1100px] lg:max-w-[960px] xl:max-w-screen-lg p-6 space-y-6 mx-auto">
-          {activeComponent === 'dashboard' ? (
-            <>
-              <StatsHeader totalStats={totalStats} spaceId={spaceID}/>
-              <div className="space-y-6">
-                {/* Loop through filtered responses to display them */}
-                {filteredResponses.map(({ feedback, testimonial }, index) => (
-                  <ResponseCard
-                    key={index}
-                    testimonial={testimonial}
-                    feedback={feedback}
-                    toggleLike={toggleLike}
-                    toggleArchive={toggleArchive}
-                    openFeedbackModal={openFeedbackModal}
-                  />
-                ))}
-              </div>
-            </>
-          ) : (
-            <EmbeddableWidget spaceID={spaceID} />
-          )}
-        </main>
+        {activeComponent === 'dashboard' ? (
+  <>
+    <StatsHeader totalStats={totalStats} spaceId={spaceID}/>
+    <div className="space-y-6">
+      {filteredResponses.length > 0 ? (
+        filteredResponses.map(({ feedback, testimonial }, index) => (
+          <ResponseCard
+            key={index}
+            testimonial={testimonial}
+            feedback={feedback}
+            toggleLike={toggleLike}
+            toggleArchive={toggleArchive}
+            openFeedbackModal={openFeedbackModal}
+          />
+        ))
+      ) : (
+        <EmptyState spaceURL={totalStats.spaceURL} />
+      )}
+    </div>
+  </>
+) : (
+  <EmbeddableWidget spaceID={spaceID} />
+)}        </main>
       </div>
       {isModalOpen && selectedFeedback && (
         <FeedbackModal feedback={selectedFeedback} onClose={closeFeedbackModal} />

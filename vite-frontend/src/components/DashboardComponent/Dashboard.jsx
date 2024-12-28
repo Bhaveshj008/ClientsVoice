@@ -27,12 +27,7 @@ function Dashboard() {
         }
       } catch (err) {
         console.error('Error fetching data:', err);
-        if (err.response?.status === 401) {
-          localStorage.removeItem('token');
-          navigate('/'); // Redirect to login
-        } else {
-          setError('Failed to fetch data. Please try again later.');
-        }
+        
       } finally {
         setLoading(false);
       }

@@ -7,6 +7,11 @@ const { generateUniqueLink } = require('../services/uniqueLinkService');
 const { generateForm } = require('../services/formService');
 const { deleteSpaceData } = require('../services/deleteSpace');
 
+const cloudinary = require('../services/cloudinaryConfig')
+
+
+
+
 // Save or Update Space
 const saveSpace = async (req, res) => {
   try {
@@ -14,7 +19,7 @@ const saveSpace = async (req, res) => {
     const {
       spaceId,
       spaceName,
-      logo,
+      logo, // Expect this as a file path or base64 data from the request
       organizationName,
       businessCategory,
       feedbackFormConfig,
@@ -24,39 +29,14 @@ const saveSpace = async (req, res) => {
     if (!["POST", "PUT"].includes(method)) {
       return res.status(405).json({ message: "Method not allowed." });
     }
-
-    // Helper function to generate unique link and update space fields
-    const updateSpaceFields = async (space, newFields) => {
-      const { spaceName, logo, organizationName, businessCategory } = newFields;
-
-      // Update only if values are provided
-      if (spaceName) space.spaceName = spaceName;
-      if (logo) space.logo = logo;
-      if (organizationName) space.organizationName = organizationName;
-      if (businessCategory) space.businessCategory = businessCategory;
-
-      // Generate a new unique link if spaceName changes
-      if (spaceName) {
-        space.uniqueLink = await generateUniqueLink(spaceName);
-      }
-
-      return await space.save();
-    };
-
-    // Helper function to update form configurations
-    const updateFormConfig = async (formId, formConfig, FormModel) => {
-      if (formConfig && formId) {
-        await FormModel.findByIdAndUpdate(formId, { formConfig }, { new: true });
-      }
-    };
+    
 
     let space;
-
     if (method === "POST") {
-      if (!spaceName || !logo || !organizationName || !businessCategory) {
+      if (!spaceName || !organizationName || !businessCategory) {
         return res.status(400).json({ message: "Missing required fields for creating a space." });
       }
-
+      
       // Create new Space
       space = new Space({
         clientId: req.client.clientId,
@@ -67,8 +47,8 @@ const saveSpace = async (req, res) => {
         uniqueLink: await generateUniqueLink(spaceName),
       });
 
+
       const savedSpace = await space.save();
-      console.log(savedSpace)
 
       // Link space to client
       await Client.findOneAndUpdate(
@@ -104,29 +84,45 @@ const saveSpace = async (req, res) => {
       return res.status(201).json(savedSpace);
 
     } else if (method === "PUT") {
+      // Handle editing
       if (!spaceId) {
         return res.status(400).json({ message: "Space ID is required for updating." });
       }
 
-      // Find the space
+      // Find the existing space
       space = await Space.findById(spaceId);
       if (!space) {
         return res.status(404).json({ message: "Space not found." });
       }
+      const uniqueLink = await generateUniqueLink(spaceName);
 
       // Update space fields
-      const updatedSpace = await updateSpaceFields(space, {
-        spaceName,
-        logo,
-        organizationName,
-        businessCategory,
-      });
+      if (spaceName) space.spaceName = spaceName;
+      if (logo) space.logo = logo;
+      if (organizationName) space.organizationName = organizationName;
+      if (businessCategory) space.businessCategory = businessCategory;
+      space.uniqueLink = uniqueLink;
 
-      // Update Feedback and Testimonial Form configurations
-      await Promise.all([
-        updateFormConfig(space.feedbackFormId, feedbackFormConfig, FeedbackForm),
-        updateFormConfig(space.testimonialFormId, testimonialFormConfig, TestimonialForm),
-      ]);
+      // Update Feedback Form
+      if (feedbackFormConfig && space.feedbackFormId) {
+        await FeedbackForm.findByIdAndUpdate(
+          space.feedbackFormId,
+          { formConfig: feedbackFormConfig },
+          { new: true }
+        );
+      }
+
+      // Update Testimonial Form
+      if (testimonialFormConfig && space.testimonialFormId) {
+        await TestimonialForm.findByIdAndUpdate(
+          space.testimonialFormId,
+          { formConfig: testimonialFormConfig },
+          { new: true }
+        );
+      }
+
+      // Save the updated space
+      const updatedSpace = await space.save();
 
       return res.status(200).json(updatedSpace);
     }
@@ -135,6 +131,7 @@ const saveSpace = async (req, res) => {
     return res.status(500).json({ message: `Server error: ${error.message}` });
   }
 };
+
 
 
 // Generate Form

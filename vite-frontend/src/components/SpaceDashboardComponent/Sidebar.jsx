@@ -1,11 +1,18 @@
 import React from 'react';
 import { AiOutlineHeart } from 'react-icons/ai'; 
 
-const Sidebar = ({ filter, setFilter, spaceURL, setActiveComponent }) => {
+const Sidebar = ({ filter, setFilter, spaceURL, spaceName, spaceLogo, setActiveComponent }) => {
     const baseURL = window.location.origin; 
     return (
         <aside className="w-full lg:w-1/4 p-6 bg-gradient-to-b from-gray-900 to-black text-gray-200 border-r border-gray-800 shadow-lg">
-            <h2 className="font-semibold text-xl mb-6 text-gray-100 border-b border-gray-700 pb-2">Space Details</h2>
+          <div className="flex items-center mb-6">
+  <div className="w-16 h-12 rounded-lg shadow-md overflow-hidden">
+    <img src={spaceLogo} alt="" className="w-full h-full object-cover" />
+  </div>
+  <h2 className="font-semibold text-xl ml-4 text-gray-100 border-b border-gray-700 pb-2">
+    {spaceName}
+  </h2>
+</div>
             <p className="text-sm mb-6 text-gray-400">
                 Public URL:
                 <a 

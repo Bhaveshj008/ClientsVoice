@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 
 const StatsHeader = ({ totalStats, spaceId }) => {
   const navigate = useNavigate(); // Get the navigate function
-
+  
   // Function to handle the button click
   const handleEditSpace = () => {
     navigate(`/space/edit/${spaceId}`); // Redirect to the edit space route with spaceId

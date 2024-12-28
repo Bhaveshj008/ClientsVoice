@@ -20,7 +20,7 @@ const TestimonialsPage = () => {
     cardBorderRadius: 12,
   });
   const [offset, setOffset] = useState(0);
-  const [limit] = useState(5); // Fixed number of testimonials per request
+  const [limit] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
@@ -43,28 +43,30 @@ const TestimonialsPage = () => {
     };
 
     setCustomizations(customizationOptions);
-    fetchTestimonials();
+    setTestimonials([]); // Reset testimonials when search params or spaceId changes
+    setOffset(0); // Reset offset
+    setHasMore(true); // Reset hasMore
+    fetchTestimonials(0); // Fetch testimonials from start
   }, [spaceId, location.search]);
 
-  const fetchTestimonials = async () => {
+  const fetchTestimonials = async (newOffset) => {
     if (isLoading || !hasMore) return;
 
     setIsLoading(true);
     try {
       const response = await api.get(`${spaceId}/embeddebleWidget`, {
-        params: { limit, offset },
+        params: { limit, offset: newOffset },
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
 
       const { data, total } = response.data;
 
-      if (data.length > 0) {
-        setTestimonials((prev) => [...prev, ...data]);
-        setOffset((prevOffset) => prevOffset + data.length); // Increment offset by the number of items loaded
-        setHasMore(offset + data.length < total); // Check if there are more testimonials to load
-      } else {
-        setHasMore(false);
-      }
+      setTestimonials((prev) => [
+        ...prev,
+        ...data.filter((testimonial) => !prev.some((t) => t._id === testimonial._id)),
+      ]); // Prevent duplicates
+      setOffset(newOffset + data.length); // Increment offset
+      setHasMore(newOffset + data.length < total); // Check if more testimonials exist
     } catch (error) {
       console.error('Error fetching testimonials:', error);
       setHasMore(false);
@@ -79,7 +81,7 @@ const TestimonialsPage = () => {
 
     const handleObserver = (entries) => {
       if (entries[0].isIntersecting) {
-        fetchTestimonials();
+        fetchTestimonials(offset);
       }
     };
 
@@ -98,7 +100,7 @@ const TestimonialsPage = () => {
         observerInstance.unobserve(lastTestimonialRef.current);
       }
     };
-  }, [hasMore]);
+  }, [hasMore, offset]);
 
   const containerStyles = {
     backgroundColor: customizations.bgColor,
@@ -133,7 +135,7 @@ const TestimonialsPage = () => {
       <div style={scrollStyles} className="overflow-x-auto">
         {testimonials.map((testimonial, index) => (
           <div
-            key={index}
+            key={testimonial._id}
             style={cardStyles}
             className="w-[300px] shadow-lg flex-shrink-0"
             ref={index === testimonials.length - 1 ? lastTestimonialRef : null} // Attach observer to last item

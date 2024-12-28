@@ -27,6 +27,7 @@ export function FormProvider({ children }) {
   });
 
   const [logo, setLogo] = useState(''); // Shared logo for all forms
+  const [logo_for_upload, setLogo_for_uplaod]= useState('');
   const [selectedFieldId, setSelectedFieldId] = useState(null); // Track selected field
 
   // Get current form configuration, including the shared logo and space name
@@ -53,13 +54,10 @@ export function FormProvider({ children }) {
   };
 
   const handleLogoChange = (file) => {
-    
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogo(reader.result); // Set Base64 string as logo
-      };
-      reader.readAsDataURL(file);
+      const imageURL = URL.createObjectURL(file); // Create a temporary URL for the file
+      setLogo(imageURL); 
+      setLogo_for_uplaod(file);
     }
   };
 
@@ -146,7 +144,8 @@ export function FormProvider({ children }) {
       updateFormConfigFromApi,
       getFormConfigs, // Expose the method to get form configurations
       toggleIsGenerating,
-      isGenerating
+      isGenerating,
+      logo_for_upload
 
     }}>
       {children}

@@ -17,6 +17,8 @@ exports.getStats = async (req, res) => {
             feedbackCount,
             testimonialCount,
             spaceURL: space.uniqueLink, 
+            spaceName: space.spaceName, 
+            logo: space.logo,
         });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching statistics', error });

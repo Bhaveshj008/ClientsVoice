@@ -2,6 +2,7 @@ import api from '../../../api';
 
 export const generateForm = async (prompt) => {
   const token = localStorage.getItem('token');
+  console.log(token)
   if (!token) throw new Error('No token found');
 
   const { data } = await api.post('/generate-form', { prompt }, {

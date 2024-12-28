@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import api from './api';
 import { useNavigate } from 'react-router-dom'; // Assuming you use React Router
-
 Modal.setAppElement('#root'); // Add this line to avoid accessibility warnings
 
 function Login() {
@@ -27,14 +26,41 @@ function Login() {
 
             setTimeout(() => {
                 setIsModalOpen(false);
-                navigate('/dashboard'); // Redirect to dashboard after modal closes
-            }, 2000);
+                navigate('/dashboard'); 
+            }, 1000);
         } catch (error) {
             setIsSuccess(false);
             setModalMessage(error.response?.data?.message || 'Login failed. Please try again.');
             setIsModalOpen(true);
         }
     };
+
+    useEffect(() => {
+        const validateToken = async () => {
+            const token = localStorage.getItem('token');
+
+            if (!token) return; // If no token, skip validation
+
+            try {
+                const { data } = await api.get('/auth/verify-token', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (data.success) {
+                    navigate('/dashboard');
+                } else {
+                    localStorage.removeItem('token');
+                }
+            } catch (error) {
+                console.log('Token validation error:', error.response?.data?.message || error.message);
+                localStorage.removeItem('token');
+            }
+        };
+
+        validateToken();
+    }, [navigate]);
 
     return (
         <div className="flex items-center justify-center h-screen bg-gray-100">

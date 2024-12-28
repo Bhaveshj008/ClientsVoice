@@ -1,16 +1,13 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FormContext } from '../../utils/FormContext';
 import { generateForm, createOrEditSpace } from './formService';
+import { compressImage, uploadToCloudinary } from '../../../../services/imageService';
 import Modal from '../Modal';
-import { useNavigate } from 'react-router-dom';
-import InputField from './InputField';
-import FileInputField from './FileInputField';
-import SelectField from './SelectField';
-import TextAreaField from './TextAreaField';
-import LoadingIndicator from './LoadingIndicator';
-import { BUSINESS_CATEGORIES } from './businessCategories';
+import SpaceFormBase from './SpaceFormBase';
+import FormGenerator from './FormGenerator';
 
-function RightSidebar({ mode, initialData }) {
+function RightSidebar({ mode = 'create', initialData }) {
   const {
     formConfig,
     setFormConfig,
@@ -20,108 +17,151 @@ function RightSidebar({ mode, initialData }) {
     handleSpaceNameChange,
     getFormConfigs,
     toggleIsGenerating,
+    logo_for_upload
   } = useContext(FormContext);
 
   const navigate = useNavigate();
-  const [prompt, setPrompt] = useState('');
-  const [organizationName, setOrganizationName] = useState('');
-  const [businessCategory, setBusinessCategory] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleInputChange = (setter) => (e) => setter(e.target.value);
+  const [state, setState] = useState({
+    prompt: '',
+    organizationName: '',
+    businessCategory: '',
+    showModal: false,
+    isGeneratingForm: false,
+    isSubmittingSpace: false,
+    error: '',
+    success: ''
+  });
 
   useEffect(() => {
-    if (mode === 'edit') {
+    if (mode === 'edit' && initialData) {
       handleSpaceNameChange(initialData.space.spaceName);
       updateFormConfigFromApi(initialData.formConfig);
-      setOrganizationName(initialData.space.organizationName);
-      setBusinessCategory(initialData.space.businessCategory);
+      setState(prev => ({
+        ...prev,
+        organizationName: initialData.space.organizationName,
+        businessCategory: initialData.space.businessCategory
+      }));
     }
-  }, [initialData]);
+  }, [initialData, mode]);
 
-  const handleFormGeneration = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleInputChange = (field, value) => {
+    setState(prev => ({ 
+      ...prev, 
+      [field]: value,
+      error: '',
+      success: ''
+    }));
+  };
+
+  const handleFormGeneration = async () => {
+    if (!state.prompt.trim()) {
+      setState(prev => ({ ...prev, error: 'Please enter a prompt for form generation' }));
+      return;
+    }
+
+    setState(prev => ({ ...prev, isGeneratingForm: true, error: '', success: '' }));
     toggleIsGenerating(true);
 
     try {
-      const data = await generateForm(prompt);
+      const data = await generateForm(state.prompt);
       updateFormConfigFromApi(data);
+      setState(prev => ({ ...prev, success: 'Form generated successfully', error: '' }));
     } catch (error) {
-      console.error('Error generating form:', error.message);
+      setState(prev => ({ ...prev, error: `Error generating form: ${error.message}`, success: '' }));
     } finally {
-      setIsLoading(false);
+      setState(prev => ({ ...prev, isGeneratingForm: false }));
       toggleIsGenerating(false);
     }
   };
 
   const handleCreateSpace = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    
+    if (!spaceName?.trim() || !state.organizationName?.trim() || !state.businessCategory) {
+      setState(prev => ({ 
+        ...prev, 
+        error: 'All fields are required'
+      }));
+      return;
+    }
+
+    setState(prev => ({ ...prev, isSubmittingSpace: true, error: '', success: '' }));
 
     try {
       const { feedbackFormConfig, testimonialFormConfig } = getFormConfigs();
-      const spaceData = {
+      const uploadedLogoUrl = logo_for_upload ? 
+        await uploadToCloudinary(await compressImage(logo_for_upload)) : null;
+
+      const data = await createOrEditSpace({
         spaceId: initialData?.space._id,
         spaceName,
-        logo: formConfig.logo,
-        organizationName,
-        businessCategory,
+        logo: uploadedLogoUrl,
+        organizationName: state.organizationName,
+        businessCategory: state.businessCategory,
         feedbackFormConfig,
         testimonialFormConfig,
-      };
+      }, mode);
 
-      const data = await createOrEditSpace(spaceData, mode);
-      setShowModal(true);
-      setTimeout(() => navigate(`/space/dashboard/${data._id}`), 3000);
+      setState(prev => ({ 
+        ...prev, 
+        showModal: true,
+        success: `Space ${mode === 'edit' ? 'updated' : 'created'} successfully`
+      }));
+      
+      setTimeout(() => navigate(`/space/dashboard/${data._id}`), 2000);
     } catch (error) {
-      console.error('Error creating space:', error.message);
+      setState(prev => ({ 
+        ...prev,
+        error: `Error ${mode === 'edit' ? 'updating' : 'creating'} space: ${error.message}`
+      }));
     } finally {
-      setIsLoading(false);
+      setState(prev => ({ ...prev, isSubmittingSpace: false }));
     }
   };
 
   return (
     <div className="w-1/4 bg-gray-900 p-4 border-l border-gray-700">
-      <h2 className="text-xl font-semibold mb-4 text-white">Create New Space</h2>
       <form className="space-y-4" onSubmit={handleCreateSpace}>
-        <InputField label="Space name" value={spaceName} onChange={handleInputChange(handleSpaceNameChange)} />
-        <InputField label="Form Heading" value={formConfig.title} onChange={(e) => setFormConfig({ ...formConfig, title: e.target.value })} />
-        <FileInputField label="Space Logo" onChange={handleLogoChange} />
-        <InputField label="Organization name" value={organizationName} onChange={handleInputChange(setOrganizationName)} />
-        <SelectField label="Business Category" options={BUSINESS_CATEGORIES} value={businessCategory} onChange={handleInputChange(setBusinessCategory)} />
+        <SpaceFormBase
+          spaceName={spaceName}
+          organizationName={state.organizationName}
+          businessCategory={state.businessCategory}
+          formConfig={formConfig}
+          handleSpaceNameChange={handleSpaceNameChange}
+          handleInputChange={handleInputChange}
+          setFormConfig={setFormConfig}
+          handleLogoChange={handleLogoChange}
+          error={state.error}
+          success={state.success}
+          mode={mode}
+        />
 
         {mode !== 'edit' && (
-          <>
-            <TextAreaField label="Detailed prompt for Form generation" value={prompt} onChange={(e) => setPrompt(e.target.value)} minLength={20} />
-            {isLoading && <LoadingIndicator text="Generating form..." />}
-            <button
-              type="button"
-              className="w-full border border-purple-500 rounded py-2 px-4 text-purple-300 hover:bg-purple-700 hover:text-white"
-              onClick={handleFormGeneration}
-            >
-              Generate Form
-            </button>
-          </>
+          <FormGenerator
+            prompt={state.prompt}
+            isGeneratingForm={state.isGeneratingForm}
+            handlePromptChange={(value) => handleInputChange('prompt', value)}
+            handleFormGeneration={handleFormGeneration}
+          />
         )}
 
         <button
           type="submit"
-          className="w-full bg-purple-500 text-white font-semibold rounded py-2 px-4 hover:bg-purple-700 transition-all"
+          className="w-full bg-purple-500 text-white font-semibold rounded py-2 px-4 hover:bg-purple-700 transition-all disabled:opacity-50"
+          disabled={state.isSubmittingSpace}
         >
-          {isLoading ? 'Submitting...' : mode === 'edit' ? 'Save Changes' : 'Create Space'}
+          {state.isSubmittingSpace ? 'Submitting...' : mode === 'edit' ? 'Save Changes' : 'Create Space'}
         </button>
       </form>
-      {showModal && (
-  <Modal
-    message={mode === 'edit' ? "Your space has been successfully updated!" : "Your space has been successfully created!"}
-    onClose={() => navigate('/space/dashboard')}
-  />
-)}
 
+      {state.showModal && (
+        <Modal
+          message={`Your space has been successfully ${mode === 'edit' ? 'updated' : 'created'}!`}
+          onClose={() => navigate(`/space/dashboard/`)}
+        />
+      )}
     </div>
   );
 }
 
-export default RightSidebar;
+export default RightSidebar;  

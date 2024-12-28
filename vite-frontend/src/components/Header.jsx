@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle, FaCog, FaArrowRight, FaWrench, FaSignOutAlt } from "react-icons/fa";
-
+import CheckToken from "./checkToken";
 function Header() {
   const navigate = useNavigate();
   const [menuVisible, setMenuVisible] = useState(false);
@@ -13,12 +13,13 @@ function Header() {
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem("token");
-    navigate("/");
+    localStorage.removeItem("token");  
+    navigate("/"); 
   };
 
   return (
     <header className="flex justify-between items-center p-6 bg-gray-900 shadow-lg border-b border-gray-700">
+      <CheckToken/>
       {/* Branding */}
       <div className="text-2xl font-bold text-white flex items-center gap-2">
       <img src="/logo.png" alt="ClientsVoice Logo" className="w-10 h-10" />
