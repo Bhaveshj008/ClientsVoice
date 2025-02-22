@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useRef, useEffect } from 'react';
 import { MessageSquare, Code, Heart, Clock, Palette, Lock, Users } from 'lucide-react';
 import {Link} from 'react-router-dom'
@@ -173,29 +172,3 @@ const FeaturesSection = () => {
 };
 
 export default FeaturesSection;
-=======
-import React from 'react';
-const Features =()=>{
-    return (
-        <section id="features" className="features">
-        <h2>Why Choose ClientsVoice?</h2>
-        <div className="feature-item">
-            <i className="icon">📈</i>
-            <h3>Embed Anywhere</h3>
-            <p>Easily add testimonials to your website with simple code snippets.</p>
-        </div>
-        <div className="feature-item">
-            <i className="icon">🎨</i>
-            <h3>Customizable Themes</h3>
-            <p>Match the look and feel of your brand with ease.</p>
-        </div>
-        <div className="feature-item">
-            <i className="icon">🔗</i>
-            <h3>Easy Integrations</h3>
-            <p>Seamlessly connect with popular platforms and tools.</p>
-        </div>
-    </section>
-    );
-}
-export default Features;
->>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225

@@ -27,10 +27,7 @@ export function FormProvider({ children }) {
   });
 
   const [logo, setLogo] = useState(''); // Shared logo for all forms
-<<<<<<< HEAD
   const [logo_for_upload, setLogo_for_uplaod]= useState('');
-=======
->>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
   const [selectedFieldId, setSelectedFieldId] = useState(null); // Track selected field
 
   // Get current form configuration, including the shared logo and space name
@@ -57,20 +54,10 @@ export function FormProvider({ children }) {
   };
 
   const handleLogoChange = (file) => {
-<<<<<<< HEAD
     if (file) {
       const imageURL = URL.createObjectURL(file); // Create a temporary URL for the file
       setLogo(imageURL); 
       setLogo_for_uplaod(file);
-=======
-    
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogo(reader.result); // Set Base64 string as logo
-      };
-      reader.readAsDataURL(file);
->>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
     }
   };
 
@@ -98,10 +85,7 @@ export function FormProvider({ children }) {
       id: Date.now().toString(),
       type,
       label: `${type.charAt(0).toUpperCase() + type.slice(1)} Field`,
-<<<<<<< HEAD
       name: `${type.charAt(0).toUpperCase() + type.slice(1)} Field`,
-=======
->>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
       placeholder: 'placeholder',
       required: false,
       style: { width: '100%' },
@@ -161,12 +145,8 @@ export function FormProvider({ children }) {
       updateFormConfigFromApi,
       getFormConfigs, // Expose the method to get form configurations
       toggleIsGenerating,
-<<<<<<< HEAD
       isGenerating,
       logo_for_upload
-=======
-      isGenerating
->>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
 
     }}>
       {children}

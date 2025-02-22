@@ -21,11 +21,7 @@ function MainContainer() {
     ];
 
     return (
-<<<<<<< HEAD
         <div className="flex-1  p-6  shadow-xl">
-=======
-        <div className="flex-1 bg-gray-900 p-6  shadow-xl">
->>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
             <div className="flex border-b border-gray-700 mb-6">
                 {buttons.map(({ type, label }) => (
                     <button

@@ -76,11 +76,7 @@ function DeleteModal({ spaceName, spaceId, onClose, onDelete }) {
                 onClick={handleDelete}
                 className="px-4 py-2 bg-red-600 text-neutral-100 rounded hover:bg-red-500 transition-all duration-200 flex items-center justify-center"
               >
-<<<<<<< HEAD
                 {loading ? <span className="loader">Deleting</span> : 'Delete'}
-=======
-                {loading ? <span className="loader">...</span> : 'Delete'}
->>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
               </button>
             </div>
           </>
