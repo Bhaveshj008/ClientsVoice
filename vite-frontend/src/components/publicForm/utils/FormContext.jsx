@@ -25,6 +25,7 @@ export const FormProvider = ({ spaceName, children }) => {
 
   const handleInputChange = (formType, fieldId, value) => {
     if (value instanceof File) {
+<<<<<<< HEAD
         
         setFormData(prevData => ({
             ...prevData,
@@ -35,6 +36,21 @@ export const FormProvider = ({ spaceName, children }) => {
         }));
     }
      else {
+=======
+        // Handle file inputs
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setFormData(prevData => ({
+                ...prevData,
+                [formType]: {
+                    ...prevData[formType],
+                    [fieldId]: reader.result, // Store Base64 representation of the file
+                },
+            }));
+        };
+        reader.readAsDataURL(value);
+    } else {
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
         // Handle other input types
         setFormData(prevData => ({
             ...prevData,

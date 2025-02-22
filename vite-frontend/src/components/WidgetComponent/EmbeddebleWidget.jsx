@@ -11,7 +11,11 @@ const EmbeddableWidget = () => {
 
   const [customization, setCustomization] = useState({
     backgroundColor: 'transparent',
+<<<<<<< HEAD
     borderStyle: 'none',
+=======
+    borderStyle: 'solid',
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
     borderColor: '#000',
     borderWidth: 1,
     borderRadius: 0,
@@ -23,7 +27,10 @@ const EmbeddableWidget = () => {
     cardPadding: 10,
     cardBorderRadius: 5,
     cardShadow: true,
+<<<<<<< HEAD
     shouldAutoScroll:true,
+=======
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
   });
 
   const [embedCode, setEmbedCode] = useState('');
@@ -42,7 +49,10 @@ const EmbeddableWidget = () => {
       cardPadding: customization.cardPadding,
       cardBorderRadius: customization.cardBorderRadius,
       cardShadow: customization.cardShadow,
+<<<<<<< HEAD
       shouldAutoScroll:customization.shouldAutoScroll,
+=======
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
     }).toString();
 
     const codeSnippet = LanguageEmbedCode({
@@ -56,7 +66,11 @@ const EmbeddableWidget = () => {
   }, [customization, spaceID, selectedLanguage]);
 
   return (
+<<<<<<< HEAD
     <div className=" p-6 rounded-lg  text-white ">
+=======
+    <div className="bg-gray-950 p-6 rounded-lg  text-white ">
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
       <h3 className="text-3xl font-semibold mb-4">Wall of Love - Preview</h3>
 
       <WidgetPreview spaceID={spaceID} customization={customization} />

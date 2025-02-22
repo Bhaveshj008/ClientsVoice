@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 
 import VideoSection from './components/VideoSection';
@@ -65,4 +66,26 @@ const LandingPage = () => {
   );
 };
 
+=======
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Header, {Hero} from "./components/Header";
+import Testimonials from "./components/Testimonials";
+import Features from "./components/Features";
+import CTA from "./components/CTA";
+import Footer from "./components/Footer";
+import './style.css'
+
+
+const LandingPage=()=>{
+    return (<>
+        <Header/>
+        <Hero/>
+        <Testimonials/>
+        <Features/>
+        <CTA/>
+        <Footer/>
+    </>);
+}
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
 export default LandingPage;

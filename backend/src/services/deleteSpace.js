@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 const cloudinary = require('./cloudinaryConfig');  // Import Cloudinary configuration
+=======
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
 const mongoose = require('mongoose');
 const Client = require('../models/ClientModel')
 const FeedbackResponse = require('../models/FormResponses').FeedbackResponse;
@@ -7,7 +10,10 @@ const FeedbackForm = require('../models/FeedbackFormConfig');
 const TestimonialForm = require('../models/TestimonialFormConfig');
 const Space = require('../models/spaceModel');
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
 const deleteSpaceData = async (clientId, spaceID) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -15,6 +21,7 @@ const deleteSpaceData = async (clientId, spaceID) => {
   const responseDetails = {};
 
   try {
+<<<<<<< HEAD
     // Fetch space data to get the logo URL before deleting
     const space = await Space.findById(spaceID).session(session);
     
@@ -42,6 +49,8 @@ const deleteSpaceData = async (clientId, spaceID) => {
     }
 
     // Delete related data from the database
+=======
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
     await Promise.all([
       Client.updateOne({ clientId }, { $pull: { spaces: spaceID } }, { session }),
       FeedbackResponse.deleteMany({ spaceId: spaceID }, { session }),

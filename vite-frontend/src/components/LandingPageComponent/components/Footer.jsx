@@ -1,4 +1,5 @@
 import React from 'react';
+<<<<<<< HEAD
 const Footer = () => {
     return (
         <footer className=" py-12 border-t border-gray-800">
@@ -48,6 +49,19 @@ const Footer = () => {
                 </div>
             </div>
         </footer>
+=======
+const Footer =()=>{
+    return (
+        <footer>
+        <div className="footer-links">
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Privacy Policy</a>
+        </div>
+        <p>© 2024 ClientsVoice. All rights reserved.</p>
+    </footer>
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
     );
 }
 export default Footer;

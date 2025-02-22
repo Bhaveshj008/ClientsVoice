@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useRef, useState } from 'react';
 import {Link} from 'react-router-dom'
 
@@ -91,3 +92,15 @@ const BrandingSection = () => {
 };
 
 export default BrandingSection;
+=======
+import React from 'react';
+const CTA = ()=>{
+    return (
+        <section className="cta">
+        <h2>Ready to build trust with testimonials?</h2>
+        <a href="#get-started" className="cta-button">Get Started Now</a>
+    </section>
+    );
+}
+export default CTA;
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225

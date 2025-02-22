@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+<<<<<<< HEAD
 
 const clientSchema = new mongoose.Schema({
     clientId: { 
@@ -61,3 +62,15 @@ const clientSchema = new mongoose.Schema({
 clientSchema.index({ email: 1, authProvider: 1 });
 
 module.exports = mongoose.model('Clients', clientSchema);
+=======
+const clientSchema = new mongoose.Schema({
+    clientId: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    spaces: [{ type: mongoose.Schema.Types.ObjectId, ref: 'spaces' }],
+    registrationDate:{type: Date, default: Date.now()},
+    subscriptionPlan: { type: String, default: "none" } 
+},{ timestamps: true });
+module.exports = mongoose.model('Clients', clientSchema);
+>>>>>>> edd34ec68b5f8db24eae3d7f1074077213774225
