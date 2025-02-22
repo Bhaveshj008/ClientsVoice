@@ -85,6 +85,7 @@ export function FormProvider({ children }) {
       id: Date.now().toString(),
       type,
       label: `${type.charAt(0).toUpperCase() + type.slice(1)} Field`,
+      name: `${type.charAt(0).toUpperCase() + type.slice(1)} Field`,
       placeholder: 'placeholder',
       required: false,
       style: { width: '100%' },

@@ -23,7 +23,7 @@
               placeholder={field.placeholder}
               required={field.required}
               style={{ ...field.styles }}
-              onChange={handleChange}
+              onChange={handleChange}z
             />
           );
         // Text Areas

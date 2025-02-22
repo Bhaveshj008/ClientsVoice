@@ -28,24 +28,51 @@ exports.getStats = async (req, res) => {
 
 exports.getResponses = async (req, res) => {
     const { spaceID } = req.params;
-
+    const { page = 1, limit = 5, filter = 'All' } = req.query; // Added `filter` query param
+    
     try {
-        const feedbackResponses = await FeedbackResponse.find({ spaceId: spaceID });
-        const testimonialResponses = await TestimonialResponse.find({ spaceId: spaceID });
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        
+        // Fetch testimonial responses
+        let testimonialQuery = { spaceId: spaceID };
+        if (filter === 'Liked') {
+            testimonialQuery.liked = true;
+        } else if (filter === 'Archived') {
+            testimonialQuery.archived = true;
+        } else if (filter === 'All') {
+            testimonialQuery.archived = { $ne: true }; // Exclude archived testimonials
+        }
 
-       
+        const testimonialResponses = await TestimonialResponse.find(testimonialQuery)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit));
 
-        const pairedResponses = feedbackResponses.map((feedback, index) => ({
-            feedback: feedback,
-            testimonial: testimonialResponses[index] || {},  
+        // Fetch corresponding feedback responses
+        const feedbackResponses = await FeedbackResponse.find({ spaceId: spaceID })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit));
+        
+        // Pair feedback with testimonials
+        const pairedResponses = testimonialResponses.map((testimonial, index) => ({
+            testimonial,
+            feedback: feedbackResponses[index] || null, // Use index to pair
         }));
+        
+        const totalCount = await TestimonialResponse.countDocuments(testimonialQuery);
 
-        res.json(pairedResponses);
-
+        res.json({
+            responses: pairedResponses,
+            totalPages: Math.ceil(totalCount / limit),
+            currentPage: parseInt(page),
+            hasMore: skip + testimonialResponses.length < totalCount
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching responses', error });
     }
 };
+
 
 
 
@@ -97,5 +124,26 @@ exports.toggleArchive = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: 'Error archiving/unarchiving testimonial', error });
+    }
+};
+
+exports.getSingleTestimonial = async (req, res) => {
+    const { testimonialID } = req.params;
+
+    try {
+        // Find the testimonial using the provided testimonialID
+        const testimonial = await TestimonialResponse.findById(testimonialID);
+
+        if (!testimonial) {
+            return res.status(404).json({ message: 'Testimonial not found' });
+        }
+
+        // Return the testimonial details
+        res.json({
+            message: 'Testimonial fetched successfully',
+            testimonial,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching testimonial', error });
     }
 };

@@ -1,7 +1,7 @@
 const express = require('express');
 const {saveSpace, generateFormConfig, deleteSpace, getCompleteSpace} = require('../controllers/spaceController');
 const {verifyToken} = require('../middlewares/authMiddleware');
-const {getStats, getResponses, toggleLike, toggleArchive} = require('../controllers/spaceDashboardController');
+const {getStats, getResponses, toggleLike, toggleArchive, getSingleTestimonial} = require('../controllers/spaceDashboardController');
 
 const router = express.Router();
 
@@ -25,10 +25,14 @@ router.get('/:spaceID/stats', verifyToken, getStats);
 router.get('/:spaceID/responses', verifyToken, getResponses);
 
 // Like/Unlike a testimonial
-router.post('/:spaceID/testimonial/:testimonialID/like', verifyToken, toggleLike);
+router.post('/:spaceID/testimonial/:testimonialID/like', toggleLike);
+router.get('/:spaceID/testimonial/:testimonialID/like', toggleLike);
 
 // Archive/Unarchive a testimonial
 router.post('/:spaceID/testimonial/:testimonialID/archive', verifyToken, toggleArchive);
+
+//get single testimonial for direct like
+router.get('/testimonial/:testimonialID', getSingleTestimonial);
 
 router.delete('/spaces/delete/:spaceID', verifyToken, deleteSpace);
 

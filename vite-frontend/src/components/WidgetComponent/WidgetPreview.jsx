@@ -13,7 +13,7 @@ const WidgetPreview = ({ spaceID, customization }) => {
 
   return (
     <iframe
-      src={`${baseURL}/space/${spaceID}/widget?${new URLSearchParams({
+      src={`http://localhost:5000/space/${spaceID}/widget?${new URLSearchParams({
         bgColor: customization.backgroundColor,
         borderStyle: customization.borderStyle,
         borderColor: customization.borderColor,
@@ -25,6 +25,7 @@ const WidgetPreview = ({ spaceID, customization }) => {
         cardPadding: customization.cardPadding,
         cardBorderRadius: customization.cardBorderRadius,
         cardShadow: customization.cardShadow,
+        shouldAutoScroll: customization.shouldAutoScroll
       }).toString()}`}
       style={iframeStyles}
       title="Embeddable Widget"

@@ -1,5 +1,5 @@
 const express = require('express');
-const { register, login } = require('../controllers/authController');
+const { register, login, googleLogin } = require('../controllers/authController');
 const router = express.Router();
 const { verifyToken } = require('../middlewares/authMiddleware'); // Adjust path as necessary
 
@@ -15,5 +15,6 @@ router.get('/verify-token', verifyToken, (req, res) => {
 
 router.post('/register', register);
 router.post('/login', login);
+router.post('/google-login', googleLogin)
 
 module.exports = router;

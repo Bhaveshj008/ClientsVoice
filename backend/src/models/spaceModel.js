@@ -8,6 +8,7 @@ const spaceSchema = new mongoose.Schema({
     businessCategory: { type: String },
     feedbackCollection: { type: Boolean, default: false },
     testimonialCollection: { type: Boolean, default: false },
+    responsesCount:{ type: Number, default: 0 },
     feedbackFormId: { type: mongoose.Schema.Types.ObjectId, ref: "FeedbackForm" },
     testimonialFormId: { type: mongoose.Schema.Types.ObjectId, ref: "TestimonialForm" },
     uniqueLink: { type: String, required: true, unique: true }, 

@@ -31,7 +31,7 @@ function LeftSidebar() {
   };
 
   return (
-    <div className={` ${isCollapsed ? "w-16" : "w-1/4"} bg-gray-900 p-4 border-r border-gray-700 transition-all duration-300 ease-in-out`}>
+    <div className={` ${isCollapsed ? "w-16" : "w-1/4"} p-4 border-r border-purple-700 transition-all duration-300 ease-in-out`}>
       {/* Toggle Button */}
       <button onClick={toggleSidebar} className="text-gray-400 hover:text-gray-200 focus:outline-none mb-6">
       <div className="flex items-center mb-6">
@@ -103,6 +103,15 @@ function LeftSidebar() {
                         type="text"
                         value={field.placeholder || ''}
                         onChange={(e) => handleUpdateField(field.id, 'placeholder', e.target.value)}
+                        className="p-2 w-full bg-gray-800 border border-gray-600 rounded text-white"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm text-gray-300 mb-1">Name (required for data collection, please provide it)</label>
+                      <input
+                        type="text"
+                        value={field.name || ''}
+                        onChange={(e) => handleUpdateField(field.id, 'name', e.target.value)}
                         className="p-2 w-full bg-gray-800 border border-gray-600 rounded text-white"
                       />
                     </div>

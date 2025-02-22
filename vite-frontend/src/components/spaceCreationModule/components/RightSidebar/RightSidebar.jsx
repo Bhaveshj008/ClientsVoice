@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormContext } from '../../utils/FormContext';
 import { generateForm, createOrEditSpace } from './formService';
-import { compressImage, uploadToCloudinary } from '../../../../services/imageService';
+import { compressImage, uploadToCloudinary } from '../../../services/imageService';
 import Modal from '../Modal';
 import SpaceFormBase from './SpaceFormBase';
 import FormGenerator from './FormGenerator';
@@ -90,7 +90,7 @@ function RightSidebar({ mode = 'create', initialData }) {
     try {
       const { feedbackFormConfig, testimonialFormConfig } = getFormConfigs();
       const uploadedLogoUrl = logo_for_upload ? 
-        await uploadToCloudinary(await compressImage(logo_for_upload)) : null;
+        await uploadToCloudinary(await compressImage(logo_for_upload), '/spaces/logos') : null;
 
       const data = await createOrEditSpace({
         spaceId: initialData?.space._id,
@@ -120,7 +120,7 @@ function RightSidebar({ mode = 'create', initialData }) {
   };
 
   return (
-    <div className="w-1/4 bg-gray-900 p-4 border-l border-gray-700">
+    <div className="w-1/4 p-4 border-l border-purple-700">
       <form className="space-y-4" onSubmit={handleCreateSpace}>
         <SpaceFormBase
           spaceName={spaceName}

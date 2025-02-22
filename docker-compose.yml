@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  vite:
+    image: frontend:1
+    container_name: vite
+    ports:
+      - "80:3000" # Map port 3000 in the container to port 80 on the host
+    stdin_open: true  # Keep STDIN open (useful for interactive mode)
+    tty: true         # Allocate a pseudo-TTY
+
+

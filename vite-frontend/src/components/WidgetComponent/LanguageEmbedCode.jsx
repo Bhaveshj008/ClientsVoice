@@ -1,7 +1,7 @@
 import React from 'react';
 
 const LanguageEmbedCode = ({ language, params, customization, spaceID }) => {
-  const Url = window.location.origin;
+  const Url = 'http://localhost:5000';
   switch (language) {
     case 'HTML':
       return `

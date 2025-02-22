@@ -13,7 +13,7 @@ const EmptyState = ({ spaceURL }) => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto mt-8 bg-gray-800/50 border border-gray-700 rounded-lg shadow-lg">
+    <div className="w-full max-w-2xl mx-auto mt-8 bg-gray-800/50 border border-purple-700 rounded-lg shadow-lg">
       <div className="flex flex-col items-center justify-center py-16 px-4 text-center space-y-6">
         {/* Icon Container */}
         <div className="rounded-full bg-gray-700/50 p-4">

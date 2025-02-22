@@ -26,7 +26,8 @@ exports.GetForm = async (req, res) => {
             testimonialFormConfig: testimonialForm.formConfig,
             logo: space.logo,
             name: space.spaceName,
-            spaceId:space._id
+            spaceId:space._id,
+            clientId:space.clientId
         });
     } catch (error) {
         console.error("Error fetching form configurations:", error);

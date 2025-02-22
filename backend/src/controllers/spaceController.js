@@ -7,7 +7,9 @@ const { generateUniqueLink } = require('../services/uniqueLinkService');
 const { generateForm } = require('../services/formService');
 const { deleteSpaceData } = require('../services/deleteSpace');
 
-const cloudinary = require('../services/cloudinaryConfig')
+const emailService = require('../services/emailService');
+
+const { spaceUpdatesEmail } = emailService
 
 
 
@@ -49,7 +51,7 @@ const saveSpace = async (req, res) => {
 
 
       const savedSpace = await space.save();
-
+      const client = await Client.findOne({ clientId: req.client.clientId });
       // Link space to client
       await Client.findOneAndUpdate(
         { clientId: req.client.clientId },
@@ -80,6 +82,8 @@ const saveSpace = async (req, res) => {
         testimonialFormId: savedTestimonialForm._id,
       });
       await savedSpace.save();
+
+      spaceUpdatesEmail(client, savedSpace, mode='create');
 
       return res.status(201).json(savedSpace);
 
@@ -123,6 +127,9 @@ const saveSpace = async (req, res) => {
 
       // Save the updated space
       const updatedSpace = await space.save();
+      const client = await Client.findOne({ clientId: req.client.clientId });
+
+      spaceUpdatesEmail(client, updatedSpace, mode='edit' );
 
       return res.status(200).json(updatedSpace);
     }
@@ -141,11 +148,11 @@ const generateFormConfig = async (req, res) => {
     const feedbackFormConfig = await generateForm(prompt);
     const testimonialFormConfig = {
       fields: [
-        { id: 'TestimonialName', type: 'text', name: 'name', label: 'Name', required: true },
-        { id: 'TestimonialEmail', type: 'email', name: 'email', label: 'Email', required: true },
+        { id: 'TestimonialName', type: 'text', name: 'name', label: 'Your Name', required: true },
+        { id: 'TestimonialEmail', type: 'email', name: 'email', label: 'Your Email', required: true },
         { id: 'TestimonialPosition', type: 'text', name: 'position', label: 'Position', required: true },
         { id: 'TestimonialTextArea', type: 'textarea', name: 'testimonial', label: 'Testimonial', required: true },
-        { id: 'TestimonialImage', type: 'file', name: 'image', label: 'Image',accept: 'image/*', multiple: false},
+        { id: 'TestimonialImage', type: 'file', name: 'ProfileImage', label: 'Profile Image',accept: 'image/*', multiple: false},
       ],
     };
 
@@ -158,8 +165,11 @@ const generateFormConfig = async (req, res) => {
 // Delete Space and Related Data
 const deleteSpace = async (req, res) => {
   const { spaceID } = req.params;
+  const space = await Space.findById(spaceID);
+  const client = await Client.findOne({clientId: space.clientId});
   try {
     const responseDetails = await deleteSpaceData(req.client.clientId, spaceID);
+    spaceUpdatesEmail(client, space, mode='delete' );
     res.status(200).json({ message: 'Space and related data deleted successfully.', details: responseDetails });
   } catch (error) {
     console.error('Error deleting space:', error);

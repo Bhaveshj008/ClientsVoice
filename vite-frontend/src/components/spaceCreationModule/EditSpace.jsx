@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api";
 import SpaceCreation from "./SpaceCreation";
+import CheckToken from "../CheckToken";
+<CheckToken/>
 
 function SpaceEditor() {
   const { mode, spaceId } = useParams(); // Get mode ('edit' or 'create') and spaceId from URL params
@@ -36,11 +38,12 @@ function SpaceEditor() {
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  return <SpaceCreation mode={mode} initialData={initialData} />;
+  return (
+    <>
+      <CheckToken />  {/* Ensure CheckToken runs before rendering */}
+      {isLoading ? <div>Loading...</div> : <SpaceCreation mode={mode} initialData={initialData} />}
+    </>
+  );
 }
 
 export default SpaceEditor;
