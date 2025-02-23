@@ -10,6 +10,11 @@
     }
   ],
   "routes": [
+    {
+      "src": "/(.*)\\.(js|css|json|ico|png|jpg|svg|woff|woff2|ttf|eot)",
+      "headers": { "cache-control": "public, max-age=31536000, immutable" },
+      "dest": "/$1"
+    },
     { "src": "/space/([^/]+)/widget", "dest": "/index.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
