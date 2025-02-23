@@ -20,11 +20,13 @@
       { "src": "/space/.*", "dest": "/index.html" },
       { "src": "/dashboard", "dest": "/index.html" },
       { "src": "/space/dashboard/.*", "dest": "/index.html" },
-      { "src": "/", "dest": "/index.html" },
+      
       {
-        "src": "/(.*\\.(js|css|png|jpg|svg|woff|woff2|ttf|eot|gif))",
-        "dest": "/$1"
+        "src": "/(.*\\.(html|js|css|png|jpg|svg|woff|woff2|ttf|eot|gif|ico))",
+        "dest": "/public/$1"
       },
+  
+      { "src": "/", "dest": "/index.html" },
       { "src": "/(.*)", "dest": "/index.html" }
     ]
   }
