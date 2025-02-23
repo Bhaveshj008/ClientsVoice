@@ -512,7 +512,7 @@ function closeModal() {
             }
     
             try {
-                const response = await fetch(`http://localhost:2727/api/testimonial/${testimonialId}`);
+                const response = await fetch(`https://api.clientsvoice.in/api/testimonial/${testimonialId}`);
                 
                 if (!response.ok) {
                     throw new Error('Failed to load testimonial');
@@ -539,7 +539,7 @@ function closeModal() {
 
     try {
         const response = await fetch(
-            `http://localhost:2727/api/${spaceId}/testimonial/${testimonialId}/like`,
+            `https://api.clientsvoice.in/api/${spaceId}/testimonial/${testimonialId}/like`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

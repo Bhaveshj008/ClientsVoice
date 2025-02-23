@@ -5,7 +5,7 @@ const CONSTANTS = {
     LOGO_URL: 'https://res.cloudinary.com/dl2hupy6v/image/upload/v1735660446/Screenshot_2024-12-31_212314_izcbh0.png',
     COMPANY_NAME: 'ClientsVoice',
     CURRENT_YEAR: new Date().getFullYear(),
-    SUPPORT_EMAIL: 'support@clientsvoice.com'
+    SUPPORT_EMAIL: 'support@clientsvoice.in'
 };
 
 // Email Templates - Reusable Components
@@ -116,7 +116,7 @@ const emailService = {
                   </p>
                 </div>
   
-                <a href="http://localhost:5173/directLikeFromEmail.html?spaceId=${space._id}&testimonialId=${testimonialFormData._id}"
+                <a href="https://www.clientsvoice.in/directLikeFromEmail.html?spaceId=${space._id}&testimonialId=${testimonialFormData._id}"
  
                    style="display: inline-block; 
                           background-color: #2c5282; 

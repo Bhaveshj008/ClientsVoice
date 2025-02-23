@@ -13,7 +13,7 @@ const WidgetPreview = ({ spaceID, customization }) => {
 
   return (
     <iframe
-      src={`http://localhost:5000/space/${spaceID}/widget?${new URLSearchParams({
+      src={`https://clv-wall-of-love.vercel.app/space/${spaceID}/widget?${new URLSearchParams({
         bgColor: customization.backgroundColor,
         borderStyle: customization.borderStyle,
         borderColor: customization.borderColor,

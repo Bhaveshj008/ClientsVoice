@@ -2,7 +2,7 @@ import React from 'react';
 
 const EmbeddableWidget = () => (
   <iframe
-    src="http://localhost:5000/space/679f6307981adbb9346d6869/widget?bgColor=transparent&borderStyle=none&borderColor=%23000&borderWidth=1&borderRadius=0&scrollType=horizontal&cardBgColor=%23F97316&cardTextColor=%23ffffff&cardPadding=10&cardBorderRadius=20&cardShadow=true&shouldAutoScroll=true"
+    src="https://clv-wall-of-love.vercel.app/space/679f6307981adbb9346d6869/widget?bgColor=transparent&borderStyle=none&borderColor=%23000&borderWidth=1&borderRadius=0&scrollType=horizontal&cardBgColor=%23F97316&cardTextColor=%23ffffff&cardPadding=10&cardBorderRadius=20&cardShadow=true&shouldAutoScroll=true"
     style={{
       width: '100%',
       height: '450px',
