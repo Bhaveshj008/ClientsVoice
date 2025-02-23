@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import api from '../../../vite-frontend/src/components/api';
+import api from '../api';
 import ScrollContainer from './ScrollContainer';
 import { getContainerStyles, getScrollContainerStyles, getCardStyles } from './styles';
 import GlobalStyles from './GlobalStyles';
