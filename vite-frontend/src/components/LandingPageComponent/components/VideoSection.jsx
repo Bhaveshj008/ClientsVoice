@@ -5,7 +5,7 @@ const VideoSection = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const videoId = "j5L8aV5ktlU";
+  const videoId = "nbmJnCHXaW8";
 
   const handlePlayClick = () => {
     setIsPlaying(true);
