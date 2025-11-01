@@ -1,127 +1,929 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agriculture for Tomorrow</title>
-  <style>
-    /* General Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background: #f4f4f4;
-    }
-    header {
-      background: #4CAF50;
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-    }
-    header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-    header p {
-      font-size: 1.2rem;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mangal Alankar Jewellers - Exquisite Jewellery Collection</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    /* Navigation */
-    nav {
-      display: flex;
-      justify-content: center;
-      background: #333;
-      padding: 0.5rem 0;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      transition: background 0.3s, color 0.3s;
-    }
-    nav a:hover {
-      background: #4CAF50;
-      color: white;
-    }
+        :root {
+            --primary-color: #d4af37;
+            --secondary-color: #8a5a44;
+            --accent-color: #c19a6b;
+            --light-color: #f9f5ea;
+            --dark-color: #2c2417;
+        }
 
-    /* Main Content */
-    main {
-      padding: 2rem;
-      text-align: center;
-    }
-    main h2 {
-      font-size: 2rem;
-      color: #4CAF50;
-      margin-bottom: 1rem;
-    }
-    main p {
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    .btn {
-      display: inline-block;
-      background: #4CAF50;
-      color: white;
-      padding: 0.8rem 1.2rem;
-      text-decoration: none;
-      font-size: 1rem;
-      border-radius: 5px;
-      transition: background 0.3s;
-    }
-    .btn:hover {
-      background: #45a049;
-    }
+        body {
+            background: linear-gradient(45deg, var(--light-color), #fff);
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
 
-    /* Footer */
-    footer {
-      background: #333;
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-      margin-top: 2rem;
-    }
-    footer p {
-      font-size: 0.9rem;
-    }
-  </style>
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--dark-color), var(--secondary-color));
+            color: var(--light-color);
+            padding: 20px 0;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            transform: translateZ(0);
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            transform: scale(1.05) translateZ(0);
+        }
+
+        .logo span {
+            color: var(--light-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--light-color);
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(212,175,55,0.2) 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color) 25%, transparent 25%) -50px 0,
+                        linear-gradient(225deg, var(--primary-color) 25%, transparent 25%) -50px 0,
+                        linear-gradient(315deg, var(--primary-color) 25%, transparent 25%),
+                        linear-gradient(45deg, var(--primary-color) 25%, transparent 25%);
+            background-size: 100px 100px;
+            background-color: var(--light-color);
+            opacity: 0.05;
+            z-index: 1;
+            animation: backgroundMove 30s linear infinite;
+        }
+
+        @keyframes backgroundMove {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 100px 100px;
+            }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            text-align: center;
+            padding: 0 20px;
+            z-index: 2;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .hero-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            transition: all 0.4s ease-in-out;
+            z-index: -1;
+        }
+
+        .hero-btn:hover::before {
+            left: 0;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Featured Collection Section */
+        .featured {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            display: inline-block;
+            position: relative;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background-color: var(--primary-color);
+            bottom: -10px;
+            left: 25%;
+        }
+
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .collection-item {
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .collection-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .collection-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .collection-content {
+            padding: 210px 20px 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .item-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .item-desc {
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .item-price {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .view-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 20px;
+            background-color: var(--secondary-color);
+            color: var(--light-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background: linear-gradient(to right, var(--light-color), #fff);
+            padding: 80px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonials::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, var(--primary-color) 5px, transparent 5px),
+                        radial-gradient(circle at 30% 60%, var(--primary-color) 5px, transparent 5px),
+                        radial-gradient(circle at 60% 30%, var(--primary-color) 5px, transparent 5px),
+                        radial-gradient(circle at 90% 80%, var(--primary-color) 5px, transparent 5px);
+            background-size: 300px 300px;
+            opacity: 0.1;
+        }
+
+        .testimonial-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .testimonial-slider {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-track {
+            display: flex;
+            transition: transform 0.5s ease;
+            animation: testimonialSlide 20s infinite linear;
+        }
+
+        @keyframes testimonialSlide {
+            0%, 25% {
+                transform: translateX(0);
+            }
+            33%, 58% {
+                transform: translateX(-100%);
+            }
+            66%, 91% {
+                transform: translateX(-200%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .testimonial-card {
+            min-width: 100%;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--dark-color);
+            font-style: italic;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .testimonial-text::before,
+        .testimonial-text::after {
+            content: '"';
+            font-size: 3rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+            position: absolute;
+        }
+
+        .testimonial-text::before {
+            top: -20px;
+            left: -15px;
+        }
+
+        .testimonial-text::after {
+            bottom: -40px;
+            right: -15px;
+        }
+
+        .client-name {
+            font-weight: bold;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .category-box {
+            flex: 1 1 250px;
+            height: 250px;
+            background-color: var(--light-color);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-box:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            opacity: 0.7;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .category-box:hover::before {
+            opacity: 0.9;
+        }
+
+        .category-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+            z-index: 2;
+            padding: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .category-box:hover .category-name {
+            transform: scale(1.1);
+        }
+
+        /* Newsletter Section */
+        .newsletter {
+            background: linear-gradient(to right, var(--secondary-color), var(--dark-color));
+            padding: 60px 20px;
+            color: var(--light-color);
+            text-align: center;
+        }
+
+        .newsletter-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .newsletter h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .newsletter p {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .newsletter-form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .newsletter-input {
+            flex: 1 1 300px;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .newsletter-btn {
+            padding: 15px 30px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            border: none;
+            border-radius: 5px;
+            color: var(--dark-color);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            padding: 60px 20px 30px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .footer-logo span {
+            color: var(--light-color);
+        }
+
+        .footer-about p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-links h4, .footer-contact h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-links h4::after, .footer-contact h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: var(--light-color);
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .contact-icon {
+            min-width: 20px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .copyright {
+            margin-top: 40px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animation Classes */
+        @keyframes shimmer {
+            0% {
+                opacity: 0.6;
+                transform: scale(0.98);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0.6;
+                transform: scale(0.98);
+            }
+        }
+
+        .shimmer {
+            animation: shimmer 2s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .float {
+            animation: float 5s infinite ease-in-out;
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .collection-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+
+            .category-box {
+                flex: 1 1 180px;
+                height: 180px;
+            }
+
+            .testimonial-text {
+                font-size: 1rem;
+            }
+        }
+
+        /* Mobile menu for small screens */
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">Mangal <span>Alankar</span></div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#collections">Collections</a></li>
+                <li><a href="#categories">Categories</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="mobile-toggle">☰</div>
+        </nav>
+    </header>
 
-  <header>
-    <h1>Agriculture for Tomorrow</h1>
-    <p>Innovating agriculture for a sustainable future</p>
-  </header>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Timeless Beauty, Crafted with Passion</h1>
+            <p>Discover exquisite jewellery that celebrates the artistry of traditional craftsmanship blended with contemporary designs. Each piece tells a unique story of elegance and sophistication.</p>
+            <a href="#collections" class="hero-btn">Explore Collection</a>
+        </div>
+    </section>
 
-  <nav>
-    <a href="#about">About Us</a>
-    <a href="#services">Our Services</a>
-    <a href="#contact">Contact</a>
-  </nav>
+    <!-- Featured Collection Section -->
+    <section class="featured" id="collections">
+        <div class="section-title">
+            <h2>Featured Collection</h2>
+        </div>
+        <div class="collection-grid">
+            <!-- Collection Item 1 -->
+            <div class="collection-item float">
+                <div class="collection-content">
+                    <h3 class="item-title">Royal Elegance Necklace</h3>
+                    <p class="item-desc">A stunning masterpiece featuring intricate filigree work with traditional motifs, perfect for wedding ceremonies.</p>
+                    <div class="item-price">₹75,999</div>
+                    <a href="#" class="view-btn">View Details</a>
+                </div>
+            </div>
+            
+            <!-- Collection Item 2 -->
+            <div class="collection-item shimmer">
+                <div class="collection-content">
+                    <h3 class="item-title">Radiant Diamond Earrings</h3>
+                    <p class="item-desc">Crafted with precision, these earrings feature brilliant-cut diamonds set in 18K gold to add sparkle to any occasion.</p>
+                    <div class="item-price">₹45,499</div>
+                    <a href="#" class="view-btn">View Details</a>
+                </div>
+            </div>
+            
+            <!-- Collection Item 3 -->
+            <div class="collection-item float">
+                <div class="collection-content">
+                    <h3 class="item-title">Heritage Gold Bangles</h3>
+                    <p class="item-desc">A set of traditional bangles with contemporary patterns, handcrafted by our master artisans.</p>
+                    <div class="item-price">₹89,999</div>
+                    <a href="#" class="view-btn">View Details</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <main>
-    <h2>Welcome to the Future of Farming</h2>
-    <p>Our mission is to revolutionize agriculture with sustainable practices and innovative solutions.</p>
-    <p>Join us in creating a greener, healthier, and more productive world.</p>
-    <a href="#learn-more" class="btn">Learn More</a>
-  </main>
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="section-title">
+            <h2>Customer Testimonials</h2>
+        </div>
+        <iframe src="https://clv-wall-of-love.vercel.app/space/67c49a1cf355f0d6ca575a23/widget?bgColor=transparent&borderStyle=none&borderColor=%23000&borderWidth=1&borderRadius=0&scrollType=horizontal&cardBgColor=%23d2af45&cardTextColor=%23ffffff&cardPadding=10&cardBorderRadius=26&cardShadow=true&shouldAutoScroll=true" 
+        style="width:100%; height:400px; 
+        border:1px none #000; 
+        border-radius:0px; background-color:transparent; 
+        overflow:auto;"
+        title="Embeddable Widget">
+      </iframe>
+    </section>
 
-  <iframe src="http://localhost:5173/space/6751b07329d71d38605fcd17/widget?bgColor=%23f7f5f5&borderStyle=solid&borderColor=%23000&borderWidth=1&borderRadius=0&scrollType=horizontal&cardBgColor=%2300D084&cardTextColor=%23ffffff&cardPadding=25&cardBorderRadius=5&cardShadow=true" 
-  style="width:100%; height:400px; 
-  border:1px solid #000; 
-  border-radius:0px; background-color:#f7f5f5; 
-  overflow:auto;"
-  title="Embeddable Widget">
-</iframe>
+    <!-- Categories Section -->
+    <section class="categories" id="categories">
+        <div class="section-title">
+            <h2>Explore Categories</h2>
+        </div>
+        <div class="category-container">
+            <div class="category-box">
+                <div class="category-name">Bridal Collection</div>
+            </div>
+            <div class="category-box">
+                <div class="category-name">Diamond Jewellery</div>
+            </div>
+            <div class="category-box">
+                <div class="category-name">Gold Ornaments</div>
+            </div>
+            <div class="category-box">
+                <div class="category-name">Silver Collection</div>
+            </div>
+        </div>
+    </section>
 
-  <footer>
-    <p>&copy; 2024 Agriculture for Tomorrow. All Rights Reserved.</p>
-  </footer>
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="newsletter-container">
+            <h3>Subscribe to Our Newsletter</h3>
+            <p>Stay updated with our latest collections, exclusive offers, and jewellery care tips.</p>
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Your Email Address" required>
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
 
-</body>
-</html>
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-container">
+            <div class="footer-about">
+                <div class="footer-logo">Mangal <span>Alankar</span></div>
+                <p>With a legacy spanning over 35 years, Mangal Alankar is synonymous with trust, quality, and exquisite craftsmanship in the jewellery industry.</p>
+                <div class="social-icons">
+                    <div class="social-icon">f</div>
+                    <div class="social-icon">in</div>
+                    <div class="social-icon">ig</div>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#collections">Collections</a></li>
+                    <li><a href="#categories">Categories</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Our Services</h4>
+                <ul>
+                    <li><a href="#">Custom Designs</a></li>
+                    <li><a href="#">Jewellery Cleaning</a></li>
+                    <li><a href="#">Gold Exchange</a></li>
+                    <li><a href="#">Diamond Certification</a></li>
+                    <li><a href="#">Jewellery Valuation</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div>123 Jewellers Lane, Market Road, Delhi, 110001</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div>+91 98765 43210</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">✉️</div>
+                        <div>info@mangalalankar.com</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">⏰</div>
+                        <div>Mon-Sat: 10:00 AM - 8:00 PM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2025 Mangal Alankar Jewellers. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple animation when elements come into view
+        document.addEventListener('DOMContentLoaded', function() {
+            const animateOnScroll = function() {
+                const elements = document.querySelectorAll('.collection-item, .category-box, .section-title');
+                
+                elements.forEach(element => {
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const screenPosition = window.innerHeight;
+                    
+                    if(elementPosition < screenPosition) {
+                        element.classList.add('shimmer');
+                        setTimeout(() => {
+                            element.classList.remove('shimmer');
+                        }, 2000);
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', animateOnScroll);
+            
+            // Mobile menu toggle
+            const mobileToggle = document.querySelector('.mobile-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            mobileToggle.addEventListener('click', function() {
+                navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '70px';
+                navLinks.style.right = '20px';
+                navLinks.style.backgroundColor = '#2c2417';
+                nav
